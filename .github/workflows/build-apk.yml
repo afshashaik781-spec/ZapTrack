@@ -16,18 +16,23 @@ jobs:
           node-version: 18
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Install NPM & Capacitor Dependencies
+      - name: Install NPM Dependencies
         run: |
           npm install
           npm install @capacitor/core @capacitor/cli @capacitor/android
 
+      - name: Create 'www' folder (The Final Fix)
+        run: |
+          mkdir -p www
+          rsync -av --exclude='www' --exclude='node_modules' --exclude='android' --exclude='.git' --exclude='.github' ./ ./www/
+
       - name: Initialize Capacitor Android
-        run: npx cap add android || true
+        run: npx cap add android --force || true
 
       - name: Sync Capacitor
         run: npx cap sync android
