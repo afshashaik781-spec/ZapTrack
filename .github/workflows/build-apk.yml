@@ -26,13 +26,20 @@ jobs:
           npm install
           npm install @capacitor/core @capacitor/cli @capacitor/android
 
-      - name: Create 'www' folder (The Final Fix)
+      - name: Fix Capacitor Config & Create WWW
         run: |
+          echo '{
+            "appId": "com.zaptrack.app",
+            "appName": "ZapTrack",
+            "webDir": "www",
+            "bundledWebRuntime": false
+          }' > capacitor.config.json
+          
           mkdir -p www
-          rsync -av --exclude='www' --exclude='node_modules' --exclude='android' --exclude='.git' --exclude='.github' ./ ./www/
+          rsync -av --exclude='www' --exclude='node_modules' --exclude='.git' --exclude='.github' ./ ./www/
 
       - name: Initialize Capacitor Android
-        run: npx cap add android --force || true
+        run: npx cap add android
 
       - name: Sync Capacitor
         run: npx cap sync android
