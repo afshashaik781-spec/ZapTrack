@@ -1,0 +1,95 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "JSWElectricalInventoryDatabase",
+  "description": "Core Database Schema for JSW Plant Electrical Department Inventory System",
+  "collections": {
+    "users": {
+      "description": "Authorized employees master list for authentication and access control",
+      "primaryKey": "Employee_ID",
+      "type": "object",
+      "required": ["Employee_ID", "Full_Name"],
+      "properties": {
+        "Employee_ID": {
+          "type": "string",
+          "description": "Unique identifier for the employee (Primary Key)"
+        },
+        "Full_Name": {
+          "type": "string",
+          "description": "Full name of the employee as provisioned by the Administrator"
+        }
+      }
+    },
+    "inventory": {
+      "description": "Consumable electrical materials catalog with current stock levels",
+      "primaryKey": "Item_ID",
+      "type": "object",
+      "required": ["Item_ID", "Item_Name", "Current_Stock_Level"],
+      "properties": {
+        "Item_ID": {
+          "type": "string",
+          "description": "Unique identifier for the inventory item (Primary Key)"
+        },
+        "Item_Name": {
+          "type": "string",
+          "description": "Descriptive name of the electrical consumable item"
+        },
+        "Current_Stock_Level": {
+          "type": "integer",
+          "description": "Current stock quantity in storage. Can temporarily be negative during offline sync reconciliation."
+        },
+        "binningLocation": {
+          "type": "string",
+          "description": "Physical shelf, rack, or bin location for the item. Defaults to '-' if unspecified.",
+          "default": "-"
+        }
+      }
+    },
+    "transactions": {
+      "description": "Ledger of checkout transactions recorded by employees and synced to the database",
+      "primaryKey": "Transaction_ID",
+      "type": "object",
+      "required": [
+        "Transaction_ID",
+        "Employee_ID",
+        "Item_ID",
+        "Quantity_Taken",
+        "Timestamp",
+        "Sync_Status"
+      ],
+      "properties": {
+        "Transaction_ID": {
+          "type": "string",
+          "description": "Unique identifier for the transaction (Primary Key / UUID)"
+        },
+        "Employee_ID": {
+          "type": "string",
+          "description": "Employee ID of the individual checking out the item (Foreign Key -> Users.Employee_ID)"
+        },
+        "Item_ID": {
+          "type": "string",
+          "description": "Item ID of the consumable material being checked out (Foreign Key -> Inventory.Item_ID)"
+        },
+        "Quantity_Taken": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Quantity of the item taken during checkout or returned to shelf"
+        },
+        "Transaction_Type": {
+          "type": "string",
+          "enum": ["CHECKOUT", "RETURN"],
+          "default": "CHECKOUT",
+          "description": "Type of material transaction: CHECKOUT (outgoing) or RETURN (returned unused parts)"
+        },
+        "Timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp representing exact transaction time"
+        },
+        "Sync_Status": {
+          "type": "boolean",
+          "description": "True if synced to the central server; False if pending offline sync queue"
+        }
+      }
+    }
+  }
+}
