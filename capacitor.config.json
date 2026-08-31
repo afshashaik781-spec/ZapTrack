@@ -1,0 +1,11 @@
+{
+  "appId": "com.jsw.zaptrack",
+  "appName": "Zap Track",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": true
+  }
+}

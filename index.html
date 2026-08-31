@@ -1,0 +1,1556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Zap Track - JSW Electrical</title>
+  <meta name="description" content="Zap Track - JSW Steel Electrical Engineering Department Digital Inventory Management System">
+  
+  <!-- Progressive Web App (PWA) Configuration -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#13261c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Zap Track">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/icon-192x192.png">
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700;800&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="enterprise-theme">
+
+  <!-- =========================================================================
+       PWA INSTALL PROMPT BANNER (Consolidated Sleek Bottom Banner)
+       ========================================================================= -->
+  <div id="pwaInstallBanner" class="pwa-install-banner hidden">
+    <div class="pwa-banner-content">
+      <div class="pwa-app-icon-wrap">
+        <img src="assets/icons/icon-192x192.png" alt="Zap Track App" class="pwa-banner-icon">
+      </div>
+      <div class="pwa-banner-text">
+        <div class="pwa-banner-title">Install Zap Track</div>
+        <div class="pwa-banner-subtitle">Add to Home Screen for offline storage access</div>
+      </div>
+    </div>
+    <div class="pwa-banner-actions">
+      <!-- Android/Chrome direct install trigger -->
+      <button id="pwaInstallActionBtn" class="btn btn-warning btn-sm btn-pwa-install">
+        <i class="fa-solid fa-download"></i> <span>Install</span>
+      </button>
+      <!-- iOS Safari Instructions trigger -->
+      <button id="pwaIosGuideBtn" class="btn btn-warning btn-sm btn-pwa-install hidden">
+        <i class="fa-solid fa-arrow-up-from-bracket"></i> <span>Add to Home</span>
+      </button>
+      <button id="pwaDismissBtn" class="btn-pwa-dismiss" title="Dismiss">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- iOS PWA Add to Home Screen Instructions Modal -->
+  <div id="pwaIosModal" class="modal-backdrop hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <i class="fa-brands fa-apple modal-title-icon"></i>
+          <h3>Install on iPhone / iPad</h3>
+        </div>
+        <button class="modal-close-btn" data-close-modal="pwaIosModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="ios-install-steps">
+          <div class="ios-step">
+            <div class="step-num">1</div>
+            <div class="step-text">Tap the <strong>Share</strong> button <i class="fa-solid fa-arrow-up-from-bracket"></i> in Safari's bottom toolbar.</div>
+          </div>
+          <div class="ios-step">
+            <div class="step-num">2</div>
+            <div class="step-text">Scroll down and select <i class="fa-regular fa-square-plus"></i> <strong>'Add to Home Screen'</strong>.</div>
+          </div>
+          <div class="ios-step">
+            <div class="step-num">3</div>
+            <div class="step-text">Tap <strong>'Add'</strong> in the top right. The app will install with offline storage capabilities!</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary btn-block" data-close-modal="pwaIosModal">Got It</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       GLOBAL TOP BAR (Official Logo, Network State Simulator & Role Status)
+       ========================================================================= -->
+  <div class="global-view-switcher" id="globalTopBar">
+    <div class="switcher-brand">
+      <div class="topbar-logo-badge">
+        <img src="assets/images/jsw-logo.png" alt="JSW Steel Logo" class="topbar-logo-img">
+      </div>
+      <span class="switcher-brand-title">Zap Track &bull; Electrical Dept</span>
+    </div>
+    
+    <!-- Active Role Indicator (When Logged In) -->
+    <div class="active-session-pill hidden" id="activeSessionPill">
+      <span class="session-icon" id="sessionRoleIcon"><i class="fa-solid fa-user-shield"></i></span>
+      <span class="session-label" id="sessionRoleLabel">Administrator Portal</span>
+      <button class="btn-exit-role" id="globalLogoutBtn" title="Sign out and return to role selection landing page">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out
+      </button>
+    </div>
+
+    <!-- Network Simulation & Sync Controller (PRD Section 4.3) -->
+    <div class="switcher-tools">
+      <button id="globalNetworkToggleBtn" class="btn-network-toggle online" title="Click to simulate Dead Zone storage area (Offline Mode)">
+        <span class="net-dot"></span>
+        <span id="globalNetStatusText">Network: <strong>Online (Central DB)</strong></span>
+      </button>
+      
+      <div id="globalPendingQueueBadge" class="pending-queue-pill hidden" title="Transactions queued in local device storage awaiting sync">
+        <i class="fa-solid fa-cloud-arrow-up"></i>
+        <span id="globalPendingQueueCount">0</span> Queued
+      </div>
+
+      <button id="globalInstallAppHeaderBtn" class="btn-header-install hidden" title="Install Zap Track">
+        <i class="fa-solid fa-download"></i> <span>Install</span>
+      </button>
+
+      <button id="toggleDeviceFrameBtn" class="btn-device-toggle hidden" title="Toggle Mobile Device Frame Simulator">
+        <i class="fa-solid fa-mobile-screen"></i> <span>Mobile Frame</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       VIEW 0: UNIFIED LOGIN GATEWAY (Centered Auth Card with Role Toggle)
+       ========================================================================= -->
+  <div id="landingGatewayView" class="view-wrapper active">
+    <div class="gateway-login-wrapper">
+      
+      <!-- Center Auth Card -->
+      <div class="gateway-login-card">
+        
+        <!-- Top Branding Header -->
+        <div class="gateway-header">
+          <div class="gateway-logo-wrap">
+            <img src="assets/images/jsw-logo.png" alt="JSW Steel Logo" class="gateway-logo-img">
+          </div>
+          <h1 class="gateway-app-title">Zap Track</h1>
+          <p class="gateway-subtitle">Sign in to access the portal</p>
+        </div>
+
+        <!-- Role Toggle Switch / Segmented Control -->
+        <div class="role-segmented-control" role="tablist">
+          <button type="button" class="role-segment-btn active" id="segmentEmployeeBtn" role="tab" aria-selected="true" data-role="employee">
+            <i class="fa-solid fa-user"></i>
+            <span>Employee</span>
+          </button>
+          <button type="button" class="role-segment-btn" id="segmentAdminBtn" role="tab" aria-selected="false" data-role="admin">
+            <i class="fa-solid fa-user-shield"></i>
+            <span>Administrator</span>
+          </button>
+        </div>
+
+        <!-- Unified Login Form -->
+        <form id="gatewayLoginForm" class="gateway-form" style="display: flex; flex-direction: column; gap: 16px;">
+          
+          <div class="form-group" style="margin-bottom: 0;">
+            <label for="gatewayInputName">Name <span class="required-star">*</span></label>
+            <div class="input-with-icon">
+              <i class="fa-solid fa-user"></i>
+              <input type="text" id="gatewayInputName" class="form-input" required autocomplete="name">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0;">
+            <label for="gatewayInputEmpId">Employee ID <span class="required-star">*</span></label>
+            <div class="input-with-icon">
+              <i class="fa-solid fa-id-badge"></i>
+              <input type="text" id="gatewayInputEmpId" class="form-input" required autocomplete="username">
+            </div>
+          </div>
+
+          <!-- Vertical Breathing Room Spacer -->
+          <div style="height: 18px; min-height: 18px; width: 100%; display: block;" aria-hidden="true"></div>
+
+          <!-- Dynamic Action Submit Button -->
+          <button type="submit" class="btn btn-warning btn-block gateway-submit-btn" id="gatewaySubmitBtn" style="margin-top: 0; padding: 12px 16px;">
+            <i class="fa-solid fa-right-to-bracket" id="gatewaySubmitBtnIcon"></i>
+            <span id="gatewaySubmitBtnText">Log In</span>
+          </button>
+
+          <!-- Inline Error Message Display -->
+          <div id="gatewayErrorMessage" class="login-error-alert hidden" style="margin-top: 6px;">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <span id="gatewayErrorText">Authorization failed. Credentials not found in master list.</span>
+          </div>
+        </form>
+
+        <!-- Footer Meta -->
+        <div class="gateway-footer-meta">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span>JSW Steel &bull; Electrical Dept. Secure Portal</span>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       VIEW 1: ADMINISTRATOR DASHBOARD (Enterprise Industrial Layout)
+       ========================================================================= -->
+  <div id="adminViewContainer" class="view-wrapper">
+    <div class="app-container">
+      
+      <!-- Top Industrial Navigation Header -->
+      <header class="app-header">
+        <div class="header-left">
+          <div class="brand-badge">
+            <div class="brand-logo-card">
+              <img src="assets/images/jsw-logo.png" alt="JSW Steel" class="header-jsw-logo">
+            </div>
+            <div class="brand-info">
+              <div class="brand-company">ZAP TRACK</div>
+              <div class="brand-sub">JSW Steel &bull; Electrical Dept.</div>
+            </div>
+          </div>
+          <div class="plant-status-pill" id="adminServerStatusPill">
+            <span class="pulse-dot" id="adminServerPulseDot"></span>
+            <span class="status-text" id="adminServerStatusText">Central Server: <strong>Online</strong></span>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <!-- Upload Inventory Button -->
+          <button id="adminHeaderUploadInventoryBtn" class="btn btn-warning" title="Upload Master Inventory CSV file into database">
+            <i class="fa-solid fa-file-arrow-up"></i>
+            <span>Upload Inventory</span>
+          </button>
+
+          <!-- Upload Employees Button -->
+          <button id="adminHeaderUploadEmployeesBtn" class="btn btn-secondary" title="Upload Authorized Staff CSV file into database">
+            <i class="fa-solid fa-users-viewfinder"></i>
+            <span>Upload Employees</span>
+          </button>
+
+          <!-- Admin Self-Checkout Button -->
+          <button id="adminHeaderSelfCheckoutBtn" class="btn btn-cyan self-checkout-btn" title="Quickly take material for administrative / engineering use">
+            <i class="fa-solid fa-cart-arrow-down"></i>
+            <span>Take Material (Self-Checkout)</span>
+          </button>
+
+          <!-- Quick Export CTA -->
+          <button id="quickExportBtn" class="btn btn-secondary" title="Export monthly usage ledger to CSV/Excel">
+            <i class="fa-solid fa-file-excel"></i>
+            <span>Export Ledger</span>
+          </button>
+
+          <!-- Admin Profile with Logout -->
+          <div class="admin-profile">
+            <div class="avatar-ring">
+              <i class="fa-solid fa-user-shield"></i>
+            </div>
+            <div class="profile-details">
+              <span class="profile-name" id="adminProfileName">Dept. Administrator</span>
+              <span class="profile-role">Manager Access</span>
+            </div>
+            <button id="adminLogoutBtn" class="btn-logout-mini" title="Sign Out to Landing Page">
+              <i class="fa-solid fa-right-from-bracket"></i>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Navigation Bar -->
+      <nav class="main-tabs-nav">
+        <div class="nav-tabs">
+          <button class="tab-btn active" data-tab="inventoryTab" id="tabInventoryBtn">
+            <i class="fa-solid fa-boxes-stacked"></i>
+            <span>Master Inventory CRUD</span>
+            <span class="tab-badge" id="inventoryCountBadge">0</span>
+          </button>
+          <button class="tab-btn" data-tab="ledgerTab" id="tabLedgerBtn">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+            <span>Real-time Ledger</span>
+            <span class="tab-badge" id="ledgerCountBadge">0</span>
+          </button>
+          <button class="tab-btn" data-tab="employeesTab" id="tabEmployeesBtn">
+            <i class="fa-solid fa-users-gear"></i>
+            <span>Authorized Staff</span>
+            <span class="tab-badge" id="employeesCountBadge">0</span>
+          </button>
+        </div>
+
+        <div class="header-clock">
+          <i class="fa-regular fa-clock"></i> <span id="clockDisplay">--:--:--</span>
+        </div>
+      </nav>
+
+      <!-- Alert Banner for Negative Stock / Offline Reconciliation (PRD Appendix) -->
+      <div id="negativeStockBanner" class="alert-banner negative-stock-banner hidden">
+        <div class="alert-icon">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <div class="alert-content">
+          <h4>Critical Stock Warning (PRD Appendix: Delayed Offline Checkouts)</h4>
+          <p id="negativeStockMessage">One or more items have dropped below zero stock due to offline checkouts. Physical shelf is empty and requires immediate restocking & ledger reconciliation.</p>
+        </div>
+        <button class="btn btn-sm btn-outline-danger" id="bannerRestockBtn">
+          <i class="fa-solid fa-truck-ramp-box"></i> Restock Now
+        </button>
+      </div>
+
+      <!-- Metric KPI Stat Cards -->
+      <section class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon-wrapper blue">
+            <i class="fa-solid fa-layer-group"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Total SKUs</span>
+            <h2 class="stat-value" id="statTotalItems">0</h2>
+            <span class="stat-trend positive"><i class="fa-solid fa-check"></i> Master Catalog</span>
+          </div>
+        </div>
+
+        <div class="stat-card" id="statCardAlerts">
+          <div class="stat-icon-wrapper amber">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Low / Negative Stock</span>
+            <h2 class="stat-value" id="statLowStockCount">0</h2>
+            <span class="stat-trend warning" id="statLowStockTrend">Items &le; 15 units</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrapper green">
+            <i class="fa-solid fa-receipt"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Total Transactions</span>
+            <h2 class="stat-value" id="statTotalTransactions">0</h2>
+            <span class="stat-trend positive" id="statTodayTransactions">0 today</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon-wrapper cyan">
+            <i class="fa-solid fa-id-card-clip"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Authorized Staff</span>
+            <h2 class="stat-value" id="statTotalEmployees">0</h2>
+            <span class="stat-trend neutral"><i class="fa-solid fa-shield-halved"></i> Active Access</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Main Admin Content Area -->
+      <main class="dashboard-main">
+
+        <!-- SECTION 1: MASTER INVENTORY CRUD TAB -->
+        <section id="inventoryTab" class="tab-content active">
+          <div class="section-card">
+            <div class="card-header-bar">
+              <div class="card-title-group">
+                <h2 class="card-title"><i class="fa-solid fa-boxes-stacked"></i> Master Consumables Inventory</h2>
+                <p class="card-subtitle">Manage electrical consumables, monitor outgoing stock levels, take material for admin operations, and edit catalog records.</p>
+              </div>
+              <div class="card-action-group">
+                <button id="openUploadInventoryBtn" class="btn btn-warning" title="Upload Master Inventory CSV file">
+                  <i class="fa-solid fa-file-arrow-up"></i>
+                  <span>Upload Inventory</span>
+                </button>
+                <button id="openAdminSelfCheckoutBtn" class="btn btn-secondary">
+                  <i class="fa-solid fa-cart-arrow-down"></i>
+                  <span>Take Material</span>
+                </button>
+                <button id="openAddItemBtn" class="btn btn-primary">
+                  <i class="fa-solid fa-plus"></i>
+                  <span>Add Item</span>
+                </button>
+                <button id="refreshInventoryBtn" class="btn btn-secondary btn-icon" title="Reload Inventory">
+                  <i class="fa-solid fa-arrows-rotate"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Inventory Filter and Search Toolbar -->
+            <div class="table-toolbar">
+              <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="inventorySearchInput" placeholder="Search by Item ID or Name (MCB, Wire, Fuse)...">
+                <button class="clear-search-btn hidden" id="clearInventorySearch"><i class="fa-solid fa-xmark"></i></button>
+              </div>
+
+              <div class="filter-pills">
+                <button class="filter-chip active" data-filter="all">All Items (<span id="countFilterAll">0</span>)</button>
+                <button class="filter-chip warning-chip" data-filter="low">Low Stock &le; 15 (<span id="countFilterLow">0</span>)</button>
+                <button class="filter-chip danger-chip" data-filter="negative">Negative Stock &lt; 0 (<span id="countFilterNegative">0</span>)</button>
+                <button class="filter-chip success-chip" data-filter="healthy">In Stock &gt; 15 (<span id="countFilterHealthy">0</span>)</button>
+              </div>
+            </div>
+
+            <!-- Master Inventory Table -->
+            <div class="table-responsive">
+              <table class="industrial-table" id="inventoryTable">
+                <thead>
+                  <tr>
+                    <th style="width: 130px;">Item ID</th>
+                    <th>Item Name & Description</th>
+                    <th style="width: 150px;">Bin Location</th>
+                    <th style="width: 160px;" class="text-right">Current Stock Level</th>
+                    <th style="width: 150px;">Stock Status</th>
+                    <th style="width: 260px;" class="text-center">Admin Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="inventoryTableBody">
+                  <!-- Dynamically populated -->
+                </tbody>
+              </table>
+            </div>
+
+            <div class="table-footer-summary">
+              <div class="showing-count" id="inventoryShowingText">Showing 0 of 0 items</div>
+              <div class="legend-items">
+                <span class="legend-badge"><span class="indicator-dot green"></span> Healthy Stock</span>
+                <span class="legend-badge"><span class="indicator-dot yellow"></span> Low Stock (&le; 15)</span>
+                <span class="legend-badge"><span class="indicator-dot red"></span> Negative (&lt; 0 Alert)</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 2: REAL-TIME LEDGER TAB (PRD 4.4) -->
+        <section id="ledgerTab" class="tab-content">
+          <div class="section-card">
+            <div class="card-header-bar">
+              <div class="card-title-group">
+                <h2 class="card-title"><i class="fa-solid fa-clock-rotate-left"></i> Real-time Department Ledger</h2>
+                <p class="card-subtitle">Complete chronological audit trail of all consumable checkouts showing who took what, when, and sync state.</p>
+              </div>
+              
+              <!-- Export to CSV/Excel Section -->
+              <div class="export-actions-wrapper">
+                <button id="openExportModalBtn" class="btn btn-warning export-hero-btn">
+                  <i class="fa-solid fa-file-excel"></i>
+                  <span>Export to CSV / Excel</span>
+                  <span class="badge-count" id="exportBadgeCount">0</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Ledger Filter Toolbar with Date Range -->
+            <div class="table-toolbar ledger-toolbar">
+              <div class="toolbar-left">
+                <div class="search-box">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <input type="text" id="ledgerSearchInput" placeholder="Filter by Staff, ID, Item or TXN ID...">
+                  <button class="clear-search-btn hidden" id="clearLedgerSearch"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+
+                <!-- Quick Date Range Filter -->
+                <div class="date-preset-selector">
+                  <label for="datePresetSelect"><i class="fa-regular fa-calendar"></i> Date:</label>
+                  <select id="datePresetSelect" class="form-control-select">
+                    <option value="all">All Records</option>
+                    <option value="today">Today</option>
+                    <option value="this-week">This Week</option>
+                    <option value="this-month" selected>This Month (Current)</option>
+                    <option value="custom">Custom Range...</option>
+                  </select>
+                </div>
+
+                <!-- Custom Date Range Pickers -->
+                <div id="customDateRangeBox" class="custom-date-box hidden">
+                  <input type="date" id="customDateFrom" class="form-control-date" title="From Date">
+                  <span>to</span>
+                  <input type="date" id="customDateTo" class="form-control-date" title="To Date">
+                  <button id="applyCustomDateBtn" class="btn btn-sm btn-primary">Apply</button>
+                </div>
+              </div>
+
+              <div class="toolbar-right">
+                <button id="triggerSyncNowBtn" class="btn btn-outline-cyan btn-sm" title="Manually push all queued offline transactions">
+                  <i class="fa-solid fa-rotate"></i> Sync Offline Queue
+                </button>
+                <button id="simulateCheckoutBtn" class="btn btn-secondary btn-sm" title="Simulate a new mobile checkout event">
+                  <i class="fa-solid fa-plus-circle"></i> Simulate
+                </button>
+                <button id="refreshLedgerBtn" class="btn btn-secondary btn-icon" title="Refresh Ledger">
+                  <i class="fa-solid fa-arrows-rotate"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Real-Time Ledger Table -->
+            <div class="table-responsive">
+              <table class="industrial-table" id="ledgerTable">
+                <thead>
+                  <tr>
+                    <th style="width: 160px;">Transaction ID</th>
+                    <th style="width: 180px;">Date & Timestamp</th>
+                    <th style="width: 220px;">Staff / Admin</th>
+                    <th>Material / Consumable Taken</th>
+                    <th style="width: 120px;" class="text-right">Qty Taken</th>
+                    <th style="width: 140px;" class="text-center">Sync Status</th>
+                  </tr>
+                </thead>
+                <tbody id="ledgerTableBody">
+                  <!-- Dynamically populated -->
+                </tbody>
+              </table>
+            </div>
+
+            <div class="table-footer-summary">
+              <div class="showing-count" id="ledgerShowingText">Showing 0 of 0 transactions</div>
+              <div class="sync-summary">
+                <span class="sync-pill synced"><i class="fa-solid fa-circle-check"></i> Synced to Central DB</span>
+                <span class="sync-pill offline"><i class="fa-solid fa-cloud-arrow-up"></i> Queued (Offline Storage)</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 3: AUTHORIZED STAFF TAB (PRD 4.1 / 4.4) -->
+        <section id="employeesTab" class="tab-content">
+          <div class="section-card">
+            <div class="card-header-bar">
+              <div class="card-title-group">
+                <h2 class="card-title"><i class="fa-solid fa-users-gear"></i> Authorized Employee Master Roster</h2>
+                <p class="card-subtitle">Master list of technicians and engineers authorized to log into the mobile checkout application.</p>
+              </div>
+              <div class="card-action-group">
+                <button id="openUploadEmployeesBtn" class="btn btn-warning" title="Upload Authorized Staff CSV file">
+                  <i class="fa-solid fa-file-arrow-up"></i>
+                  <span>Upload Employees</span>
+                </button>
+                <button id="openAddEmployeeBtn" class="btn btn-primary">
+                  <i class="fa-solid fa-user-plus"></i>
+                  <span>Add Employee</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="table-toolbar">
+              <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="employeeSearchInput" placeholder="Search by Employee ID or Name...">
+                <button class="clear-search-btn hidden" id="clearEmployeeSearch"><i class="fa-solid fa-xmark"></i></button>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="industrial-table" id="employeesTable">
+                <thead>
+                  <tr>
+                    <th style="width: 170px;">Employee ID</th>
+                    <th>Full Name</th>
+                    <th style="width: 170px;" class="text-right">Total Checkouts</th>
+                    <th style="width: 170px;" class="text-center">Authorization</th>
+                    <th style="width: 150px;" class="text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="employeesTableBody">
+                  <!-- Dynamically populated -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      <!-- Footer -->
+      <footer class="app-footer">
+        <div class="footer-left">
+          <span>Zap Track &bull; JSW Steel Electrical Engineering Dept. v1.0</span>
+        </div>
+        <div class="footer-right">
+          <span><i class="fa-solid fa-database"></i> Database: <strong>Local & Central Sync</strong></span>
+          <button id="resetDataBtn" class="btn btn-link btn-xs" title="Reset to default seed data">Reset Seed Data</button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       VIEW 2: EMPLOYEE MOBILE EXPERIENCE (Sections 4.1, 4.2, 4.3 with Official Logo)
+       ========================================================================= -->
+  <div id="mobileViewContainer" class="view-wrapper">
+    <div class="mobile-outer-wrapper">
+      <div class="mobile-device-shell" id="mobileDeviceShell">
+
+        <!-- Mobile Device Speaker / Camera Notch -->
+        <div class="mobile-notch">
+          <span class="notch-speaker"></span>
+          <span class="notch-camera"></span>
+        </div>
+
+        <!-- 2.1 Mobile Login Screen (PRD Section 4.1) -->
+        <div id="mobileLoginScreen" class="mobile-subview active">
+          <div class="mobile-login-container">
+            <div class="login-brand-header">
+              <div class="mobile-login-logo-card">
+                <img src="assets/images/jsw-logo.png" alt="JSW Steel Logo" class="mobile-login-logo-img">
+              </div>
+              <h2 class="login-dept-title">Zap Track</h2>
+            </div>
+
+            <div class="login-card">
+              <div class="login-card-title">
+                <h3>Employee Sign In</h3>
+              </div>
+
+              <form id="mobileLoginForm" style="display: flex; flex-direction: column; gap: 16px;">
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label for="loginInputName">Name <span class="required-star">*</span></label>
+                  <div class="input-with-icon">
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" id="loginInputName" class="form-input" required autocomplete="name">
+                  </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label for="loginInputEmpId">Employee ID <span class="required-star">*</span></label>
+                  <div class="input-with-icon">
+                    <i class="fa-solid fa-id-badge"></i>
+                    <input type="text" id="loginInputEmpId" class="form-input" required autocomplete="username">
+                  </div>
+                </div>
+
+                <!-- Forceful Vertical Spacer -->
+                <div style="height: 24px; min-height: 24px; width: 100%; display: block;" aria-hidden="true"></div>
+
+                <button type="submit" class="btn btn-warning btn-block mobile-login-btn" id="loginSubmitBtn" style="margin-top: 0; padding: 12px 16px;">
+                  <i class="fa-solid fa-right-to-bracket"></i>
+                  <span>Log In</span>
+                </button>
+
+                <div id="loginErrorMessage" class="login-error-alert hidden" style="margin-top: 6px;">
+                  <i class="fa-solid fa-circle-exclamation"></i>
+                  <span id="loginErrorText">Authorization failed. Credentials not found in master list.</span>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2.2 Mobile Consumables Catalog Screen (PRD Section 4.2 & 4.3) -->
+        <div id="mobileCatalogScreen" class="mobile-subview hidden">
+          
+          <!-- Mobile Top App Header with Official Logo -->
+          <header class="mobile-app-header">
+            <div class="mobile-header-user">
+              <div class="mobile-nav-logo-card">
+                <img src="assets/images/jsw-logo.png" alt="JSW Steel" class="mobile-nav-logo-img">
+              </div>
+              <div class="mobile-user-info">
+                <span class="mobile-user-name" id="mobileUserName">Rajesh Kumar</span>
+                <span class="mobile-user-empid" id="mobileUserEmpId">EMP-1001</span>
+              </div>
+            </div>
+
+            <div class="mobile-header-actions">
+              <!-- Mobile Network Status Switcher -->
+              <button id="mobileNetworkStatusBtn" class="network-badge online" title="Tap to toggle between Online Wi-Fi and Storage Dead Zone (Offline)">
+                <span class="pulse-dot-sm"></span>
+                <span class="net-text" id="mobileNetBadgeText">Online</span>
+              </button>
+
+              <button id="mobileLogoutBtn" class="mobile-header-icon-btn" title="Sign Out to Role Gateway">
+                <i class="fa-solid fa-right-from-bracket"></i>
+              </button>
+            </div>
+          </header>
+
+          <!-- Offline Queue Notification Banner inside Mobile View -->
+          <div id="mobileOfflineNotice" class="mobile-offline-banner hidden">
+            <div class="offline-banner-left">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+              <span id="mobileOfflineNoticeText">Dead Zone Mode: Transactions queued locally.</span>
+            </div>
+            <button id="mobileSyncNowBtn" class="btn btn-xs btn-outline-warning hidden">
+              <i class="fa-solid fa-rotate"></i> Sync
+            </button>
+          </div>
+
+          <!-- Mobile Catalog Header & Search -->
+          <div class="mobile-catalog-toolbar">
+            <div class="catalog-heading-wrap">
+              <h2>Electrical Consumables</h2>
+              <span class="catalog-item-count" id="mobileCatalogCountText">0 available items</span>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="mobile-search-bar">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="mobileSearchInput" placeholder="Search consumables (Tape, Wire, MCB, Fuse)...">
+              <button class="clear-search-btn hidden" id="clearMobileSearch"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <!-- Quick Category / Stock Filter Chips -->
+            <div class="mobile-filter-chips">
+              <button class="m-chip active" data-mfilter="all">All Items</button>
+              <button class="m-chip" data-mfilter="wire">Wires & Cables</button>
+              <button class="m-chip" data-mfilter="mcb">Switchgear / MCB</button>
+              <button class="m-chip" data-mfilter="instock">In Stock</button>
+              <button class="m-chip" data-mfilter="low">Low Stock</button>
+            </div>
+          </div>
+
+          <!-- Mobile Consumables Catalog Cards Container -->
+          <div class="mobile-catalog-list" id="mobileCatalogList">
+            <!-- Dynamically populated item cards -->
+          </div>
+
+          <!-- Bottom Status Info -->
+          <div class="mobile-bottom-bar">
+            <div class="bottom-bar-info">
+              <i class="fa-solid fa-circle-info"></i>
+              <span id="mobileBottomBarText">Tap any item to checkout with instant gatekeeper pass</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODALS & DIALOGS
+       ========================================================================= -->
+
+  <!-- 1. Administrator Authentication Modal -->
+  <div id="adminAuthModal" class="modal-backdrop hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <i class="fa-solid fa-user-shield modal-title-icon"></i>
+          <h3>Administrator Authentication</h3>
+        </div>
+        <button class="modal-close-btn" data-close-modal="adminAuthModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="adminAuthForm">
+        <div class="modal-body">
+          <div class="admin-auth-brand-card">
+            <img src="assets/images/jsw-logo.png" alt="JSW Steel" class="modal-auth-logo">
+          </div>
+
+          <div class="form-group">
+            <label for="adminUsernameInput">Name <span class="required-star">*</span></label>
+            <div class="input-with-icon">
+              <i class="fa-solid fa-user"></i>
+              <input type="text" id="adminUsernameInput" class="form-input" required autocomplete="name">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="adminPasswordInput">Employee ID <span class="required-star">*</span></label>
+            <div class="input-with-icon">
+              <i class="fa-solid fa-id-badge"></i>
+              <input type="password" id="adminPasswordInput" class="form-input" required>
+            </div>
+          </div>
+
+          <div id="adminAuthErrorMessage" class="login-error-alert hidden">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <span id="adminAuthErrorText">Access Denied: Admin privileges required.</span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal="adminAuthModal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="adminAuthSubmitBtn">
+            <i class="fa-solid fa-right-to-bracket"></i> Log In
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. Admin Self-Checkout Modal -->
+  <div id="adminSelfCheckoutModal" class="modal-backdrop hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <i class="fa-solid fa-cart-arrow-down modal-title-icon"></i>
+          <h3>Admin Material Self-Checkout</h3>
+        </div>
+        <button class="modal-close-btn" data-close-modal="adminSelfCheckoutModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="adminSelfCheckoutForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="adminSelfItemSelect">Select Consumable Material <span class="required-star">*</span></label>
+            <select id="adminSelfItemSelect" class="form-select" required></select>
+          </div>
+
+          <div class="form-row-2col">
+            <div class="form-group">
+              <label>Current Stock</label>
+              <div class="static-badge-display" id="adminSelfCurrentStockBadge">0 units</div>
+            </div>
+            <div class="form-group">
+              <label for="adminSelfQuantity">Quantity to Pull <span class="required-star">*</span></label>
+              <input type="number" id="adminSelfQuantity" class="form-input" min="1" value="1" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="adminSelfPurpose">Plant Unit / Maintenance Purpose (Optional)</label>
+            <div class="input-with-icon">
+              <i class="fa-solid fa-wrench"></i>
+              <input type="text" id="adminSelfPurpose" class="form-input">
+            </div>
+          </div>
+
+          <div class="checkout-summary-box">
+            <div class="summary-line">
+              <span>Remaining Shelf Balance:</span>
+              <strong id="adminSelfRemainingPreview">0 units</strong>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal="adminSelfCheckoutModal">Cancel</button>
+          <button type="submit" class="btn btn-warning" id="confirmAdminSelfCheckoutBtn">
+            <i class="fa-solid fa-cart-arrow-down"></i> Checkout
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2.1 Admin Process Material Return Modal -->
+  <div id="adminReturnModal" class="modal-backdrop hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <i class="fa-solid fa-arrow-rotate-left modal-title-icon" style="color: #0284c7;"></i>
+          <h3>Process Material Return</h3>
+        </div>
+        <button class="modal-close-btn" data-close-modal="adminReturnModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="adminReturnForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="adminReturnItemSelect">Select Material to Return <span class="required-star">*</span></label>
+            <select id="adminReturnItemSelect" class="form-select" required></select>
+          </div>
+
+          <div class="form-row-2col">
+            <div class="form-group">
+              <label>Current Stock</label>
+              <div class="static-badge-display" id="adminReturnCurrentStockBadge">0 units</div>
+            </div>
+            <div class="form-group">
+              <label for="adminReturnQuantity">Quantity to Return <span class="required-star">*</span></label>
+              <div class="qty-stepper-control" style="width: 100%;">
+                <button type="button" class="stepper-btn minus" id="adminReturnQtyMinusBtn">
+                  <i class="fa-solid fa-minus"></i>
+                </button>
+                <input type="number" id="adminReturnQuantity" class="stepper-input" min="1" value="1" required>
+                <button type="button" class="stepper-btn plus" id="adminReturnQtyPlusBtn">
+                  <i class="fa-solid fa-plus"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="adminReturnEmployeeInput">Returned By (Employee / Staff Name - Optional)</label>
+            <div class="input-with-icon">
+              <i class="fa-solid fa-user"></i>
+              <input type="text" id="adminReturnEmployeeInput" class="form-input" placeholder="e.g. Rajesh Kumar (EMP-1001)">
+            </div>
+            <span class="field-hint">Optional: Log the employee who returned unused items</span>
+          </div>
+
+          <div class="checkout-summary-box">
+            <div class="summary-line">
+              <span>Updated Shelf Stock After Return:</span>
+              <strong id="adminReturnNewStockPreview" style="color: var(--jindal-green);">0 units</strong>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal="adminReturnModal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="confirmAdminReturnBtn" style="background: #0284c7; border-color: #0284c7;">
+            <i class="fa-solid fa-arrow-rotate-left"></i> Process Return
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. Mobile Quick Checkout Bottom Sheet Modal -->
+  <div id="mobileCheckoutModal" class="modal-backdrop mobile-bottomsheet-backdrop hidden">
+    <div class="mobile-bottomsheet-dialog">
+      <div class="bottomsheet-handle"></div>
+      
+      <div class="bottomsheet-header">
+        <div class="bottomsheet-title-wrap">
+          <span class="item-id-pill" id="checkoutModalItemId">ITM-001</span>
+          <h3 id="checkoutModalItemName">PVC Insulation Tape (Black - 10m)</h3>
+        </div>
+        <button class="modal-close-btn" data-close-modal="mobileCheckoutModal">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="bottomsheet-body">
+        <div class="checkout-stock-indicator">
+          <span class="stock-ind-label">Current Storage Stock:</span>
+          <span class="stock-ind-value" id="checkoutModalStock">120 units</span>
+        </div>
+
+        <div class="checkout-quantity-section">
+          <label class="qty-section-label">Quantity Needed <span class="required-star">*</span></label>
+          
+          <div class="qty-stepper-control">
+            <button type="button" class="stepper-btn minus" id="qtyMinusBtn">
+              <i class="fa-solid fa-minus"></i>
+            </button>
+            <input type="number" id="checkoutQtyInput" class="stepper-input" min="1" value="1">
+            <button type="button" class="stepper-btn plus" id="qtyPlusBtn">
+              <i class="fa-solid fa-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="checkout-summary-box">
+          <div class="summary-line">
+            <span>Checked Out By:</span>
+            <strong id="checkoutSummaryEmployee">Rajesh Kumar (EMP-1001)</strong>
+          </div>
+          <div class="summary-line">
+            <span>Remaining Shelf Stock:</span>
+            <strong id="checkoutRemainingPreview">119 units</strong>
+          </div>
+          <div class="summary-line" id="checkoutNetworkModeLine">
+            <span>Network Mode:</span>
+            <span class="badge-network-state" id="checkoutNetworkStateBadge">🟢 Online Sync</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottomsheet-footer">
+        <button type="button" class="btn btn-warning btn-block confirm-checkout-btn" id="confirmMobileCheckoutBtn">
+          <i class="fa-solid fa-circle-check"></i>
+          <span>Confirm Checkout & Generate Gate Pass</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3.1 Mobile Return Unused Material Modal -->
+  <div id="mobileReturnModal" class="modal-backdrop mobile-bottomsheet-backdrop hidden">
+    <div class="mobile-bottomsheet-dialog">
+      <div class="bottomsheet-handle"></div>
+      
+      <div class="bottomsheet-header">
+        <div class="bottomsheet-title-wrap">
+          <span class="item-id-pill" id="returnModalItemId">ITM-001</span>
+          <h3 id="returnModalItemName">PVC Insulation Tape (Black - 10m)</h3>
+        </div>
+        <button class="modal-close-btn" data-close-modal="mobileReturnModal">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="bottomsheet-body">
+        <div class="return-info-alert">
+          <i class="fa-solid fa-arrow-rotate-left"></i>
+          <span>Returning unused consumable material back to storage shelf.</span>
+        </div>
+
+        <div class="checkout-stock-indicator">
+          <span class="stock-ind-label">Current Storage Stock:</span>
+          <span class="stock-ind-value" id="returnModalStock">120 units</span>
+        </div>
+
+        <div class="checkout-quantity-section">
+          <label class="qty-section-label">Quantity to Return <span class="required-star">*</span></label>
+          
+          <div class="qty-stepper-control">
+            <button type="button" class="stepper-btn minus" id="returnQtyMinusBtn">
+              <i class="fa-solid fa-minus"></i>
+            </button>
+            <input type="number" id="returnQtyInput" class="stepper-input" min="1" value="1">
+            <button type="button" class="stepper-btn plus" id="returnQtyPlusBtn">
+              <i class="fa-solid fa-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="checkout-summary-box">
+          <div class="summary-line">
+            <span>Returned By:</span>
+            <strong id="returnSummaryEmployee">Rajesh Kumar (EMP-1001)</strong>
+          </div>
+          <div class="summary-line">
+            <span>Bin Location:</span>
+            <strong id="returnSummaryBinLocation">Rack A-01</strong>
+          </div>
+          <div class="summary-line">
+            <span>New Shelf Stock After Return:</span>
+            <strong id="returnNewStockPreview" style="color: var(--jindal-green);">121 units</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottomsheet-footer">
+        <button type="button" class="btn btn-outline-cyan btn-block confirm-return-btn" id="confirmMobileReturnBtn">
+          <i class="fa-solid fa-arrow-rotate-left"></i>
+          <span>Confirm Return to Stock</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Gatekeeper / Watchman Full-Screen Verification Pass -->
+  <div id="gatekeeperPassModal" class="gatekeeper-fullscreen-overlay hidden">
+    <div class="gatekeeper-pass-container">
+      
+      <!-- Top Security Banner -->
+      <div class="pass-security-header">
+        <div class="pass-security-badge">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span>ZAP TRACK &bull; SECURITY VERIFICATION PASS</span>
+        </div>
+      </div>
+
+      <!-- Main Verified Checkmark Header -->
+      <div class="pass-verified-hero">
+        <div class="checkmark-pulse-wrapper">
+          <div class="checkmark-circle">
+            <i class="fa-solid fa-check"></i>
+          </div>
+        </div>
+        <h1 class="pass-title">CHECKOUT VERIFIED</h1>
+        <p class="pass-subtitle">Authorized Consumable Material Exit Pass</p>
+      </div>
+
+      <!-- Live Clock and Exact Timestamp -->
+      <div class="pass-time-card">
+        <div class="live-clock-banner">
+          <span class="live-clock-dot"></span>
+          <span class="live-clock-label">LIVE PASS CLOCK:</span>
+          <span class="live-clock-digits" id="passLiveClock">--:--:--</span>
+        </div>
+        <div class="pass-exact-timestamp">
+          <span>Checkout Recorded At:</span>
+          <strong id="passExactTimestamp">2026-08-30 10:15:30 PM</strong>
+        </div>
+      </div>
+
+      <!-- High Contrast Details Grid -->
+      <div class="pass-details-card">
+        
+        <!-- Employee Info -->
+        <div class="pass-detail-row highlight-emp">
+          <div class="detail-label">
+            <i class="fa-solid fa-id-badge"></i> AUTHORIZED EMPLOYEE
+          </div>
+          <div class="detail-value-emp">
+            <div class="emp-name-large" id="passEmployeeName">Rajesh Kumar</div>
+            <div class="emp-id-badge" id="passEmployeeId">EMP-1001</div>
+          </div>
+        </div>
+
+        <!-- Material & Quantity Info -->
+        <div class="pass-detail-row highlight-material">
+          <div class="detail-label">
+            <i class="fa-solid fa-cubes-stacked"></i> MATERIAL TAKEN
+          </div>
+          <div class="detail-value-material">
+            <div class="material-name-large" id="passItemName">PVC Insulation Tape (Black - 10m)</div>
+            <div class="material-qty-badge">
+              <span class="qty-number" id="passQuantityTaken">2</span>
+              <span class="qty-unit">UNITS</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Transaction Reference ID & Sync Badge -->
+        <div class="pass-detail-row txn-row">
+          <div class="detail-label">
+            <i class="fa-solid fa-barcode"></i> TRANSACTION AUDIT
+          </div>
+          <div class="pass-audit-wrap">
+            <div class="txn-code" id="passTransactionId">TXN-20260830-0001</div>
+            <div id="passSyncStatusBadge" class="pass-sync-tag online">
+              <i class="fa-solid fa-circle-check"></i> Verified Pass
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Instructions for Watchman -->
+      <div class="pass-watchman-note">
+        <i class="fa-solid fa-eye"></i>
+        <span><strong>Gatekeeper Instruction:</strong> Verify employee badge matches name above and inspect physical quantity before opening storage exit gate.</span>
+      </div>
+
+      <!-- Done / New Checkout Action Button -->
+      <div class="pass-actions">
+        <button type="button" class="btn btn-block pass-done-btn" id="gatekeeperDoneBtn">
+          <i class="fa-solid fa-arrow-left"></i>
+          <span>Done / New Checkout</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 5. Admin Modals (Add/Edit Item, Shipment, Export, Staff, Simulate, Bulk) -->
+  <div id="itemModal" class="modal-backdrop hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <i class="fa-solid fa-box-open modal-title-icon"></i>
+          <h3 id="itemModalTitle">Add New Inventory Item</h3>
+        </div>
+        <button class="modal-close-btn" data-close-modal="itemModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="itemForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="itemInputId">Item ID <span class="required-star">*</span></label>
+            <div class="input-with-icon">
+              <i class="fa-solid fa-barcode"></i>
+              <input type="text" id="itemInputId" class="form-input" placeholder="e.g. ITM-011" required>
+            </div>
+            <span class="field-hint">Unique identifier for this material</span>
+          </div>
+
+          <div class="form-group">
+            <label for="itemInputName">Item Name & Description <span class="required-star">*</span></label>
+            <div class="input-with-icon">
+              <i class="fa-solid fa-tag"></i>
+              <input type="text" id="itemInputName" class="form-input" placeholder="e.g. 4 sq mm Copper Cable (Blue - 90m)" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="itemInputStock">Initial / Current Stock Level <span class="required-star">*</span></label>
+            <div class="input-with-icon">
+              <i class="fa-solid fa-cubes"></i>
+              <input type="number" id="itemInputStock" class="form-input" placeholder="0" required>
+            </div>
+            <span class="field-hint">Can be 0 or positive. (Negative values allowed only via offline checkouts)</span>
+          </div>
+
+          <div class="form-group">
+            <label for="itemInputBinLocation">Binning Location (Physical Shelf / Rack)</label>
+            <div class="input-with-icon">
+              <i class="fa-solid fa-location-dot"></i>
+              <input type="text" id="itemInputBinLocation" class="form-input" placeholder="e.g. Rack A-01, Shelf C-12, Bin 4">
+            </div>
+            <span class="field-hint">Defaults to '-' if left empty</span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal="itemModal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveItemBtn">
+            <i class="fa-solid fa-floppy-disk"></i> Save Item
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Export to CSV/Excel Modal -->
+  <div id="exportModal" class="modal-backdrop hidden">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <i class="fa-solid fa-file-excel modal-title-icon"></i>
+          <h3>Export Department Transaction Ledger</h3>
+        </div>
+        <button class="modal-close-btn" data-close-modal="exportModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <p class="export-intro">
+          Compile and export full audit records into standard <strong>Excel / CSV</strong> spreadsheet format to fulfill monthly corporate reporting requirements.
+        </p>
+
+        <div class="export-filter-card">
+          <h4><i class="fa-solid fa-filter"></i> Select Date Range for Export</h4>
+          
+          <div class="export-range-options">
+            <label class="radio-option">
+              <input type="radio" name="exportDateOption" value="this-month" checked>
+              <div class="radio-body">
+                <span class="radio-title">Current Month (<span id="exportMonthName">August 2026</span>)</span>
+                <span class="radio-desc">Export all usage transactions recorded in the current active calendar month</span>
+              </div>
+            </label>
+
+            <label class="radio-option">
+              <input type="radio" name="exportDateOption" value="last-30">
+              <div class="radio-body">
+                <span class="radio-title">Last 30 Days</span>
+                <span class="radio-desc">Rolling 30 days window up to today</span>
+              </div>
+            </label>
+
+            <label class="radio-option">
+              <input type="radio" name="exportDateOption" value="all">
+              <div class="radio-body">
+                <span class="radio-title">All Historical Transactions</span>
+                <span class="radio-desc">Complete ledger from initial system setup</span>
+              </div>
+            </label>
+
+            <label class="radio-option">
+              <input type="radio" name="exportDateOption" value="custom">
+              <div class="radio-body">
+                <span class="radio-title">Custom Specific Range</span>
+                <div class="custom-range-inputs">
+                  <input type="date" id="exportDateFrom" class="form-control-date">
+                  <span>to</span>
+                  <input type="date" id="exportDateTo" class="form-control-date">
+                </div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="export-preview-box">
+          <div class="preview-header">
+            <span><i class="fa-solid fa-table-list"></i> Export Summary:</span>
+            <span class="record-counter"><strong id="exportRecordCount">0</strong> transactions selected</span>
+          </div>
+          <div class="preview-columns">
+            <span class="col-tag">Transaction_ID</span>
+            <span class="col-tag">Timestamp</span>
+            <span class="col-tag">Employee_ID</span>
+            <span class="col-tag">Employee_Name</span>
+            <span class="col-tag">Item_ID</span>
+            <span class="col-tag">Item_Name</span>
+            <span class="col-tag">Quantity_Taken</span>
+            <span class="col-tag">Sync_Status</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-close-modal="exportModal">Cancel</button>
+        <button type="button" class="btn btn-warning export-btn-action" id="triggerDownloadCsvBtn">
+          <i class="fa-solid fa-download"></i> Download CSV / Excel File
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Employee Modal -->
+  <div id="employeeModal" class="modal-backdrop hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <i class="fa-solid fa-user-plus modal-title-icon"></i>
+          <h3>Authorize New Employee</h3>
+        </div>
+        <button class="modal-close-btn" data-close-modal="employeeModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="employeeForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="empInputId">Employee ID <span class="required-star">*</span></label>
+            <div class="input-with-icon">
+              <i class="fa-solid fa-id-badge"></i>
+              <input type="text" id="empInputId" class="form-input" placeholder="e.g. EMP-1008" required>
+            </div>
+            <span class="field-hint">Unique JSW Plant Employee Badge ID</span>
+          </div>
+
+          <div class="form-group">
+            <label for="empInputName">Full Name <span class="required-star">*</span></label>
+            <div class="input-with-icon">
+              <i class="fa-solid fa-user"></i>
+              <input type="text" id="empInputName" class="form-input" placeholder="e.g. Ravi Shankar" required>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal="employeeModal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveEmployeeBtn">
+            <i class="fa-solid fa-shield-check"></i> Grant Mobile Access
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Simulate Checkout Modal -->
+  <div id="simulateModal" class="modal-backdrop hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <i class="fa-solid fa-mobile-screen-button modal-title-icon"></i>
+          <h3>Simulate Mobile Checkout Flow</h3>
+        </div>
+        <button class="modal-close-btn" data-close-modal="simulateModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="simulateForm">
+        <div class="modal-body">
+          <p class="sim-intro">Test employee mobile checkout interactions, immediate stock deduction, and offline queue syncing.</p>
+
+          <div class="form-group">
+            <label for="simEmployeeSelect">Select Employee <span class="required-star">*</span></label>
+            <select id="simEmployeeSelect" class="form-select" required></select>
+          </div>
+
+          <div class="form-group">
+            <label for="simItemSelect">Select Consumable Material <span class="required-star">*</span></label>
+            <select id="simItemSelect" class="form-select" required></select>
+          </div>
+
+          <div class="form-row-2col">
+            <div class="form-group">
+              <label for="simQuantity">Quantity to Take <span class="required-star">*</span></label>
+              <input type="number" id="simQuantity" class="form-input" min="1" value="1" required>
+            </div>
+            <div class="form-group">
+              <label for="simSyncStatus">Network Connection</label>
+              <select id="simSyncStatus" class="form-select">
+                <option value="true">Online (Instant Sync)</option>
+                <option value="false">Dead Zone Storage (Offline Queue)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal="simulateModal">Cancel</button>
+          <button type="submit" class="btn btn-primary">
+            <i class="fa-solid fa-cart-arrow-down"></i> Record Checkout
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 6. Upload Master Inventory CSV Modal -->
+  <div id="uploadInventoryModal" class="modal-backdrop hidden">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <i class="fa-solid fa-boxes-stacked modal-title-icon"></i>
+          <h3>Upload Master Inventory (CSV File)</h3>
+        </div>
+        <button class="modal-close-btn" data-close-modal="uploadInventoryModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="csv-upload-container">
+          
+          <!-- Instructions Card & Template Download -->
+          <div class="csv-instructions-card">
+            <div class="inst-title">
+              <span><i class="fa-solid fa-circle-info"></i> CSV Format Requirements</span>
+              <button type="button" id="downloadInventoryTemplateBtn" class="btn-download-template" title="Download formatted template CSV">
+                <i class="fa-solid fa-download"></i> Download Sample CSV Template
+              </button>
+            </div>
+            <p>Columns: <code>Item_ID</code>, <code>Item_Name</code>, <code>Current_Stock_Level</code>, <code>Binning_Location</code> (optional, defaults to <code>-</code>)</p>
+          </div>
+
+          <!-- Drag and Drop Zone -->
+          <div class="csv-dropzone" id="inventoryDropzone">
+            <i class="fa-solid fa-cloud-arrow-up dropzone-icon"></i>
+            <div class="dropzone-title">Drag & drop your Inventory CSV file here, or click to browse</div>
+            <div class="dropzone-subtitle">Supported format: .csv (Comma-Separated Values)</div>
+            <input type="file" id="inventoryCsvFileInput" class="csv-file-input" accept=".csv,text/csv">
+          </div>
+
+          <!-- Attached File Card -->
+          <div id="inventoryAttachedFileCard" class="attached-file-card hidden">
+            <div class="attached-file-info">
+              <i class="fa-solid fa-file-csv"></i>
+              <div>
+                <div class="attached-file-name" id="inventoryAttachedFileName">inventory.csv</div>
+                <div class="attached-file-size" id="inventoryAttachedFileSize">0 KB</div>
+              </div>
+            </div>
+            <button type="button" id="removeInventoryFileBtn" class="btn-remove-file" title="Remove file">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
+          <!-- Direct Paste Fallback Option -->
+          <div class="form-group">
+            <label for="inventoryCsvTextarea"><i class="fa-solid fa-paste"></i> Or Paste CSV Raw Text Directly:</label>
+            <textarea id="inventoryCsvTextarea" class="form-textarea" rows="3" placeholder="Item_ID,Item_Name,Current_Stock_Level,Binning_Location&#10;ITM-001,PVC Insulation Tape (Black),120,Rack A-01&#10;ITM-002,2.5 sq mm Copper Wire,18,Rack B-03"></textarea>
+          </div>
+
+          <!-- Live Preview Section -->
+          <div id="inventoryCsvPreviewContainer" class="csv-preview-container hidden">
+            <div class="csv-preview-header">
+              <span class="preview-title"><strong>CSV File Preview</strong></span>
+              <div class="preview-stat-pills">
+                <span class="preview-pill valid" id="inventoryPreviewValidCount">0 Valid Rows</span>
+                <span class="preview-pill invalid hidden" id="inventoryPreviewInvalidCount">0 Invalid</span>
+              </div>
+            </div>
+            <div class="csv-preview-table-wrap">
+              <table class="csv-preview-table">
+                <thead>
+                  <tr>
+                    <th style="width: 120px;">Item ID</th>
+                    <th>Item Name</th>
+                    <th style="width: 120px;">Bin Location</th>
+                    <th style="width: 100px;" class="text-right">Stock Level</th>
+                    <th style="width: 90px;" class="text-center">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="inventoryPreviewTableBody">
+                  <!-- Dynamically populated rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Import Mode Selection -->
+          <div class="import-mode-options">
+            <label class="import-mode-label">
+              <input type="radio" name="inventoryImportMode" value="append" checked>
+              <span><strong>Append to existing</strong> (keep current inventory & add new items)</span>
+            </label>
+            <label class="import-mode-label">
+              <input type="radio" name="inventoryImportMode" value="replace">
+              <span><strong>Replace all</strong> (clean wipe & load uploaded catalog)</span>
+            </label>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-close-modal="uploadInventoryModal">Cancel</button>
+        <button type="button" class="btn btn-warning" id="saveUploadedInventoryBtn" disabled>
+          <i class="fa-solid fa-cloud-arrow-up"></i> Save Inventory to Database
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. Upload Authorized Employees CSV Modal -->
+  <div id="uploadEmployeesModal" class="modal-backdrop hidden">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <i class="fa-solid fa-users-gear modal-title-icon"></i>
+          <h3>Upload Authorized Employees (CSV File)</h3>
+        </div>
+        <button class="modal-close-btn" data-close-modal="uploadEmployeesModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="csv-upload-container">
+          
+          <!-- Instructions Card & Template Download -->
+          <div class="csv-instructions-card">
+            <div class="inst-title">
+              <span><i class="fa-solid fa-circle-info"></i> CSV Format Requirements</span>
+              <button type="button" id="downloadEmployeesTemplateBtn" class="btn-download-template" title="Download formatted template CSV">
+                <i class="fa-solid fa-download"></i> Download Sample CSV Template
+              </button>
+            </div>
+            <p>Required columns: <code>Employee_ID</code>, <code>Full_Name</code> (e.g. <code>EMP-1001,Rajesh Kumar</code>)</p>
+          </div>
+
+          <!-- Drag and Drop Zone -->
+          <div class="csv-dropzone" id="employeesDropzone">
+            <i class="fa-solid fa-cloud-arrow-up dropzone-icon"></i>
+            <div class="dropzone-title">Drag & drop your Employees CSV file here, or click to browse</div>
+            <div class="dropzone-subtitle">Supported format: .csv (Comma-Separated Values)</div>
+            <input type="file" id="employeesCsvFileInput" class="csv-file-input" accept=".csv,text/csv">
+          </div>
+
+          <!-- Attached File Card -->
+          <div id="employeesAttachedFileCard" class="attached-file-card hidden">
+            <div class="attached-file-info">
+              <i class="fa-solid fa-file-csv"></i>
+              <div>
+                <div class="attached-file-name" id="employeesAttachedFileName">employees.csv</div>
+                <div class="attached-file-size" id="employeesAttachedFileSize">0 KB</div>
+              </div>
+            </div>
+            <button type="button" id="removeEmployeesFileBtn" class="btn-remove-file" title="Remove file">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
+          <!-- Direct Paste Fallback Option -->
+          <div class="form-group">
+            <label for="employeesCsvTextarea"><i class="fa-solid fa-paste"></i> Or Paste CSV Raw Text Directly:</label>
+            <textarea id="employeesCsvTextarea" class="form-textarea" rows="3" placeholder="Employee_ID,Full_Name&#10;EMP-1001,Rajesh Kumar&#10;EMP-1002,Amit Sharma"></textarea>
+          </div>
+
+          <!-- Live Preview Section -->
+          <div id="employeesCsvPreviewContainer" class="csv-preview-container hidden">
+            <div class="csv-preview-header">
+              <span class="preview-title"><strong>CSV File Preview</strong></span>
+              <div class="preview-stat-pills">
+                <span class="preview-pill valid" id="employeesPreviewValidCount">0 Valid Rows</span>
+                <span class="preview-pill invalid hidden" id="employeesPreviewInvalidCount">0 Invalid</span>
+              </div>
+            </div>
+            <div class="csv-preview-table-wrap">
+              <table class="csv-preview-table">
+                <thead>
+                  <tr>
+                    <th style="width: 140px;">Employee ID</th>
+                    <th>Full Name</th>
+                    <th style="width: 100px;" class="text-center">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="employeesPreviewTableBody">
+                  <!-- Dynamically populated rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Import Mode Selection -->
+          <div class="import-mode-options">
+            <label class="import-mode-label">
+              <input type="radio" name="employeesImportMode" value="append" checked>
+              <span><strong>Append to existing</strong> (keep current staff & add new employees)</span>
+            </label>
+            <label class="import-mode-label">
+              <input type="radio" name="employeesImportMode" value="replace">
+              <span><strong>Replace all</strong> (clean wipe & load uploaded roster)</span>
+            </label>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-close-modal="uploadEmployeesModal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="saveUploadedEmployeesBtn" disabled>
+          <i class="fa-solid fa-cloud-arrow-up"></i> Save Employees to Database
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Firebase Cloud Database Backend (Google CDN) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+
+  <!-- Application Engine Script -->
+  <script src="js/app.js"></script>
+</body>
+</html>
