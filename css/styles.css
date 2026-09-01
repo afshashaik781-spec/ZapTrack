@@ -1628,3 +1628,111 @@ body {
   .admin-profile { margin-left: 0; margin-top: 10px; width: 100%; justify-content: space-between; border-top: 1px solid #ddd; padding-top: 10px; }
   .header-clock { display: none; } /* Hide clock on phone to save space */
 }
+
+/* =========================================================
+   COMPLETE MOBILE RESPONSIVE OVERHAUL (THE "NUKE" FIX)
+   ========================================================= */
+@media screen and (max-width: 768px) {
+  /* 1. Global Screen Lock - Stops app from overflowing right */
+  html, body, .app-container, .mobile-outer-wrapper, .view-wrapper { 
+    overflow-x: hidden !important; 
+    width: 100% !important; 
+    max-width: 100vw !important;
+  }
+  * { 
+    box-sizing: border-box !important; 
+  }
+
+  /* 2. Global Top Bar (Fixing the overlapping Network & Sign Out buttons) */
+  .global-view-switcher { 
+    flex-wrap: wrap !important; 
+    height: auto !important; 
+    padding: 10px !important; 
+    gap: 10px !important; 
+  }
+  .active-session-pill, .switcher-tools { 
+    width: 100% !important; 
+    justify-content: space-between !important; 
+    flex-wrap: wrap !important; 
+    gap: 8px !important;
+  }
+
+  /* 3. Admin Dashboard Fixes (First Screenshot) */
+  .app-header { 
+    flex-direction: column !important; 
+    padding: 15px 10px !important; 
+    height: auto !important; 
+  }
+  .header-left, .header-right { 
+    width: 100% !important; 
+    flex-direction: column !important; 
+    align-items: flex-start !important; 
+    gap: 10px !important; 
+  }
+  .header-right button, .card-action-group button { 
+    width: 100% !important; 
+    justify-content: center !important; 
+    margin-bottom: 5px !important; 
+  }
+  .admin-profile { 
+    width: 100% !important; 
+    justify-content: space-between !important; 
+    padding-top: 15px !important; 
+    border-top: 1px solid #e0e0e0 !important; 
+  }
+  .nav-tabs { 
+    flex-wrap: nowrap !important; 
+    overflow-x: auto !important; 
+    width: 100% !important; 
+    padding-bottom: 5px !important; 
+    -webkit-overflow-scrolling: touch; 
+  }
+
+  /* 4. Employee Catalog Fixes (Second Screenshot) */
+  .mobile-app-header { 
+    flex-direction: column !important; 
+    align-items: flex-start !important; 
+    height: auto !important; 
+    padding: 12px 10px !important; 
+    gap: 10px !important; 
+  }
+  .mobile-header-user, .mobile-header-actions { 
+    width: 100% !important; 
+    justify-content: space-between !important; 
+  }
+  .mobile-filter-chips { 
+    flex-wrap: nowrap !important; 
+    overflow-x: auto !important; 
+    padding-bottom: 5px !important; 
+    -webkit-overflow-scrolling: touch; 
+  }
+
+  /* 5. Fixing Cards & Containers cutting off */
+  .mobile-catalog-list, .dashboard-main, .stats-grid { 
+    padding: 10px !important; 
+  }
+  .catalog-card, .section-card, .stat-card { 
+    width: 100% !important; 
+    margin-left: 0 !important; 
+    margin-right: 0 !important; 
+  }
+
+  /* 6. Fixing Buttons inside Employee Catalog (Return / Take Item) */
+  .catalog-card-actions {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  .catalog-card-actions button {
+    width: 100% !important;
+  }
+
+  /* 7. Tables */
+  .table-responsive { 
+    width: 100% !important; 
+    overflow-x: auto !important; 
+    border: none !important; 
+  }
+  .industrial-table { 
+    min-width: 700px !important; /* Allows scrolling instead of squishing */ 
+  }
+}
