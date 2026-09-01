@@ -1611,3 +1611,20 @@ body {
   .switcher-brand-title { display: none; }
 }
 
+/* =========================================
+   MOBILE RESPONSIVE FIX FOR ADMIN DASHBOARD
+   ========================================= */
+@media (max-width: 768px) {
+  .app-header { flex-direction: column; align-items: flex-start; height: auto; padding: 15px; gap: 15px; }
+  .header-right { width: 100%; flex-wrap: wrap; justify-content: flex-start; gap: 10px; }
+  .stats-grid { grid-template-columns: 1fr; }
+  .nav-tabs { overflow-x: auto; white-space: nowrap; padding-bottom: 5px; }
+  .tab-btn { flex: 0 0 auto; }
+  .card-header-bar { flex-direction: column; align-items: flex-start; gap: 15px; }
+  .card-action-group { width: 100%; flex-wrap: wrap; }
+  .table-toolbar { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .table-responsive { overflow-x: auto; width: 100%; -webkit-overflow-scrolling: touch; }
+  .industrial-table { min-width: 800px; /* Forces table to scroll sideways instead of squishing */ }
+  .admin-profile { margin-left: 0; margin-top: 10px; width: 100%; justify-content: space-between; border-top: 1px solid #ddd; padding-top: 10px; }
+  .header-clock { display: none; } /* Hide clock on phone to save space */
+}
