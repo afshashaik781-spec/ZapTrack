@@ -23,8 +23,6 @@
   <!-- =========================================================================
        MASTER UI POLISH & NATIVE APP OVERRIDES (AMAZON/FLIPKART STANDARD)
        ========================================================================= -->
-  /* Remove clunky admin profile box on mobile */
-      .admin-profile { display: none !important; }
   <style>
     /* Premium Font & Smooth Scrolling */
     body { font-family: 'Inter', sans-serif !important; -webkit-font-smoothing: antialiased; }
@@ -32,6 +30,9 @@
     @media (max-width: 768px) {
       /* 1. DESTROY REDUNDANT GLOBAL TOP BAR ON MOBILE */
       #globalTopBar { display: none !important; }
+      
+      /* Remove clunky admin profile box on mobile */
+      .admin-profile { display: none !important; }
       
       /* 2. PREMIUM CENTERED LOGIN SCREEN */
       #landingGatewayView {
@@ -185,18 +186,25 @@
   <!-- VIEW 1: ADMINISTRATOR DASHBOARD -->
   <div id="adminViewContainer" class="view-wrapper">
     <div class="app-container">
+      
+      <!-- UPDATED HEADER WITH NEW LOGOUT BUTTON -->
       <header class="app-header">
-        <div class="header-left">
+        <div class="header-left" style="width: 100%; display: flex; flex-direction: row !important; justify-content: space-between !important; align-items: center !important;">
           <div class="brand-badge">
             <div class="brand-logo-card"><img src="assets/images/jsw-logo.png" alt="JSW Steel" class="header-jsw-logo"></div>
             <div class="brand-info"><div class="brand-company">ZAP TRACK</div><div class="brand-sub">JSW Steel &bull; Electrical Dept.</div></div>
           </div>
+          <!-- Professional Top-Right Logout Icon -->
+          <button id="adminLogoutBtn" style="background: #fee2e2; border: 1px solid #fecaca; color: #991b1b; width: 38px; height: 38px; border-radius: 50%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.05);" title="Log Out">
+            <i class="fa-solid fa-power-off"></i>
+          </button>
         </div>
         <div class="header-right">
           <button id="adminHeaderUploadInventoryBtn" class="btn btn-warning"><i class="fa-solid fa-file-arrow-up"></i><span>Upload Inventory</span></button>
           <button id="adminHeaderUploadEmployeesBtn" class="btn btn-secondary"><i class="fa-solid fa-users-viewfinder"></i><span>Upload Employees</span></button>
           <button id="adminHeaderSelfCheckoutBtn" class="btn btn-cyan self-checkout-btn"><i class="fa-solid fa-cart-arrow-down"></i><span>Take Material</span></button>
           <button id="quickExportBtn" class="btn btn-secondary"><i class="fa-solid fa-file-excel"></i><span>Export Ledger</span></button>
+          
           <div class="admin-profile">
             <div class="avatar-ring"><i class="fa-solid fa-user-shield"></i></div>
             <div class="profile-details"><span class="profile-name" id="adminProfileName">Administrator</span><span class="profile-role">Manager Access</span></div>
