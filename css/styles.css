@@ -1736,3 +1736,47 @@ body {
     min-width: 700px !important; /* Allows scrolling instead of squishing */ 
   }
 }
+
+/* =========================================================
+   PROFESSIONAL UI CLEANUP: REMOVING DUPLICATES & FAKE FRAMES
+   ========================================================= */
+
+/* 1. Permanently remove the unprofessional 'Mobile Frame' button everywhere */
+#toggleDeviceFrameBtn {
+  display: none !important;
+}
+
+@media screen and (max-width: 768px) {
+  /* 2. Hide the redundant Global Top Bar on phones to remove duplicate Sign Outs & Logos */
+  #globalTopBar {
+    display: none !important;
+  }
+  
+  /* 3. Remove the fake phone notch and shell on actual mobile devices */
+  .mobile-device-shell {
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    max-width: 100% !important;
+    height: 100vh !important;
+    margin: 0 !important;
+  }
+  .mobile-notch {
+    display: none !important;
+  }
+  .mobile-outer-wrapper {
+    padding: 0 !important;
+    background: transparent !important;
+    display: block !important;
+  }
+
+  /* 4. Make the remaining mobile header sticky and clean */
+  .mobile-app-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 1000 !important;
+    background: #ffffff !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08) !important;
+    border-bottom: 1px solid #eeeeee !important;
+  }
+}
