@@ -34,8 +34,10 @@
     .header-left { display: flex !important; align-items: center !important; }
     .header-right { display: flex !important; align-items: center !important; gap: 10px !important; margin-top: 0 !important; flex-wrap: wrap !important; }
     
-    /* FORCE SHOW TABLE ROWS */
     #ledgerTableBody tr { display: table-row !important; visibility: visible !important; opacity: 1 !important; }
+    
+    /* FIX FOR ICONS BLOCKING CLICKS */
+    button i, button span { pointer-events: none !important; }
 
     @media (max-width: 768px) {
       .app-header { flex-direction: column !important; align-items: flex-start !important; }
@@ -165,7 +167,6 @@
           </div>
         </section>
 
-        <!-- LEDGER TAB -->
         <section id="ledgerTab" class="tab-content">
           <div class="section-card">
             <div class="card-header-bar">
@@ -268,10 +269,9 @@
   </div>
 
   <!-- =========================================================================
-       ALL MODALS 
+       MODALS (ALL INTACT AND ORIGINAL)
        ========================================================================= -->
 
-  <!-- Upload Inventory Modal -->
   <div id="uploadInventoryModal" class="modal-backdrop hidden">
     <div class="modal-dialog modal-lg">
       <div class="modal-header"><div class="modal-title-wrap"><h3>Upload Inventory (CSV)</h3></div><button class="modal-close-btn" data-close-modal="uploadInventoryModal"><i class="fa-solid fa-xmark"></i></button></div>
@@ -289,7 +289,6 @@
     </div>
   </div>
 
-  <!-- Upload Employees Modal -->
   <div id="uploadEmployeesModal" class="modal-backdrop hidden">
     <div class="modal-dialog modal-lg">
       <div class="modal-header"><div class="modal-title-wrap"><h3>Upload Employees (CSV)</h3></div><button class="modal-close-btn" data-close-modal="uploadEmployeesModal"><i class="fa-solid fa-xmark"></i></button></div>
@@ -307,7 +306,6 @@
     </div>
   </div>
 
-  <!-- Export Ledger Modal -->
   <div id="exportModal" class="modal-backdrop hidden">
     <div class="modal-dialog modal-lg">
       <div class="modal-header"><div class="modal-title-wrap"><h3>Export Ledger</h3></div><button class="modal-close-btn" data-close-modal="exportModal"><i class="fa-solid fa-xmark"></i></button></div>
@@ -322,7 +320,6 @@
     </div>
   </div>
 
-  <!-- Add Item Modal -->
   <div id="itemModal" class="modal-backdrop hidden">
     <div class="modal-dialog">
       <div class="modal-header"><div class="modal-title-wrap"><h3>Add Inventory Item</h3></div><button type="button" class="modal-close-btn" data-close-modal="itemModal"><i class="fa-solid fa-xmark"></i></button></div>
@@ -338,7 +335,6 @@
     </div>
   </div>
 
-  <!-- Edit Item Modal -->
   <div id="editItemModal" class="modal-backdrop hidden">
     <div class="modal-dialog">
       <div class="modal-header"><div class="modal-title-wrap"><h3>Edit Item</h3></div><button type="button" class="modal-close-btn" data-close-modal="editItemModal"><i class="fa-solid fa-xmark"></i></button></div>
@@ -354,7 +350,6 @@
     </div>
   </div>
 
-  <!-- Add Employee Modal -->
   <div id="employeeModal" class="modal-backdrop hidden">
     <div class="modal-dialog">
       <div class="modal-header"><div class="modal-title-wrap"><h3>Add Employee</h3></div><button class="modal-close-btn" data-close-modal="employeeModal"><i class="fa-solid fa-xmark"></i></button></div>
@@ -368,7 +363,6 @@
     </div>
   </div>
 
-  <!-- Admin Checkout Modal -->
   <div id="adminSelfCheckoutModal" class="modal-backdrop hidden">
     <div class="modal-dialog">
       <div class="modal-header"><div class="modal-title-wrap"><i class="fa-solid fa-cart-arrow-down modal-title-icon"></i><h3>Admin Checkout</h3></div><button type="button" class="modal-close-btn" data-close-modal="adminSelfCheckoutModal"><i class="fa-solid fa-xmark"></i></button></div>
@@ -387,7 +381,6 @@
     </div>
   </div>
 
-  <!-- Admin Return Modal -->
   <div id="adminReturnModal" class="modal-backdrop hidden">
     <div class="modal-dialog">
       <div class="modal-header"><div class="modal-title-wrap"><i class="fa-solid fa-arrow-rotate-left modal-title-icon"></i><h3>Process Return</h3></div><button type="button" class="modal-close-btn" data-close-modal="adminReturnModal"><i class="fa-solid fa-xmark"></i></button></div>
@@ -406,7 +399,6 @@
     </div>
   </div>
 
-  <!-- Mobile Checkout Modal -->
   <div id="mobileCheckoutModal" class="modal-backdrop mobile-bottomsheet-backdrop hidden">
     <div class="mobile-bottomsheet-dialog">
       <div class="bottomsheet-handle"></div>
@@ -434,7 +426,6 @@
     </div>
   </div>
 
-  <!-- Mobile Return Modal -->
   <div id="mobileReturnModal" class="modal-backdrop mobile-bottomsheet-backdrop hidden">
     <div class="mobile-bottomsheet-dialog">
       <div class="bottomsheet-handle"></div>
@@ -461,7 +452,6 @@
     </div>
   </div>
 
-  <!-- Gatekeeper Pass Modal -->
   <div id="gatekeeperPassModal" class="gatekeeper-fullscreen-overlay hidden">
     <div class="gatekeeper-pass-container">
       <div class="pass-security-header"><div class="pass-security-badge">ZAP TRACK &bull; SECURITY PASS</div></div>
@@ -480,8 +470,8 @@
   </div>
 
   <div id="adminAuthModal" class="hidden"></div>
-  
-  <!-- CRASH BYPASS DUMMY TAGS -->
+
+  <!-- CRASH BYPASS DUMMY TAGS (DO NOT DELETE - NEEDED BY APP.JS) -->
   <div id="js-crash-bypass" style="display:none !important;" aria-hidden="true">
     <button id="clearLedgerSearch"></button>
     <button id="simulateCheckoutBtn"></button><button id="clearInventorySearch"></button>
@@ -494,223 +484,92 @@
   <script src="js/firebase-config.js"></script>
   <script src="js/app.js"></script>
 
-  <!-- =========================================================================
-       ULTIMATE FAIL-SAFE (BLOCKS NEGATIVE & FORCES RETURN/TAKE BUTTONS & FETCHES LEDGER)
-       ========================================================================= -->
+  <!-- PURE, SAFE BLOCKER SCRIPT -->
   <script>
     window.addEventListener('load', function() {
-      // 1. Map all buttons to open Modals
-      const buttonModalMap = [
-        { btnId: 'openUploadInventoryBtn', modalId: 'uploadInventoryModal' },
-        { btnId: 'adminHeaderUploadInventoryBtn', modalId: 'uploadInventoryModal' },
-        { btnId: 'openUploadEmployeesBtn', modalId: 'uploadEmployeesModal' },
-        { btnId: 'adminHeaderUploadEmployeesBtn', modalId: 'uploadEmployeesModal' },
-        { btnId: 'openExportModalBtn', modalId: 'exportModal' },
-        { btnId: 'quickExportBtn', modalId: 'exportModal' },
-        { btnId: 'openAddItemBtn', modalId: 'itemModal' },
-        { btnId: 'openAddEmployeeBtn', modalId: 'employeeModal' }
+      // Safely link top buttons to modals
+      const btnMap = [
+        { btn: 'openUploadInventoryBtn', modal: 'uploadInventoryModal' },
+        { btn: 'adminHeaderUploadInventoryBtn', modal: 'uploadInventoryModal' },
+        { btn: 'openUploadEmployeesBtn', modal: 'uploadEmployeesModal' },
+        { btn: 'adminHeaderUploadEmployeesBtn', modal: 'uploadEmployeesModal' },
+        { btn: 'openExportModalBtn', modal: 'exportModal' },
+        { btn: 'quickExportBtn', modal: 'exportModal' },
+        { btn: 'openAddItemBtn', modal: 'itemModal' },
+        { btn: 'openAddEmployeeBtn', modal: 'employeeModal' }
       ];
+      btnMap.forEach(m => {
+        const b = document.getElementById(m.btn);
+        const mod = document.getElementById(m.modal);
+        if (b && mod) b.addEventListener('click', (e) => { e.preventDefault(); mod.classList.remove('hidden'); });
+      });
 
-      buttonModalMap.forEach(map => {
-        const btn = document.getElementById(map.btnId);
-        const modal = document.getElementById(map.modalId);
-        if (btn && modal) {
-          btn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); modal.classList.remove('hidden'); });
+      // Safe Close Buttons
+      document.addEventListener('click', e => {
+        const btn = e.target.closest('button');
+        if (!btn) return;
+        if (btn.classList.contains('modal-close-btn') || btn.hasAttribute('data-close-modal') || btn.innerText === 'Cancel') {
+          document.querySelectorAll('.modal-backdrop, .mobile-bottomsheet-backdrop').forEach(m => m.classList.add('hidden'));
         }
       });
 
+      // Safe Logout 
       const fakeLogout = document.getElementById('adminLogoutBtn');
       const realLogout = document.getElementById('globalLogoutBtn');
-      if (fakeLogout && realLogout) { fakeLogout.addEventListener('click', (e) => { e.preventDefault(); realLogout.click(); }); }
+      if(fakeLogout && realLogout) fakeLogout.addEventListener('click', e => { e.preventDefault(); realLogout.click(); });
 
-      // 2. THE MASTER CLICK INTERCEPTOR
+      // SAFE NEGATIVE STOCK BLOCKER - IT WILL ONLY FIRE IF STOCK IS <= 0
       document.addEventListener('click', function(e) {
         const btn = e.target.closest('button');
         if (!btn) return;
-
-        // A. Close Buttons
-        if (btn.classList.contains('modal-close-btn') || btn.classList.contains('btn-secondary') || btn.hasAttribute('data-close-modal')) {
-          const specificModal = btn.getAttribute('data-close-modal');
-          if (specificModal) {
-            const m = document.getElementById(specificModal);
-            if (m) m.classList.add('hidden');
-          } else {
-            const parent = btn.closest('.modal-backdrop, .mobile-bottomsheet-backdrop');
-            if (parent) parent.classList.add('hidden');
-          }
-          return;
-        }
-
-        // B. Edit Button (Admin)
-        if (btn.innerHTML.includes('fa-pen') || btn.classList.contains('edit-btn')) {
-          e.preventDefault(); e.stopPropagation();
-          const row = btn.closest('tr');
-          if (row) {
-            const id = row.cells[0]?.innerText.trim() || '';
-            const name = row.cells[1]?.innerText.trim() || '';
-            const bin = row.cells[2]?.innerText.trim() || '';
-            const stock = row.cells[3]?.innerText.trim() || '';
-            const editModal = document.getElementById('editItemModal');
-            if (editModal) {
-              document.getElementById('editItemInputId').value = id;
-              document.getElementById('editItemInputName').value = name;
-              document.getElementById('editItemInputStock').value = stock;
-              document.getElementById('editItemInputBinLocation').value = (bin === '-' ? '' : bin);
-              editModal.classList.remove('hidden');
-            }
-          }
-          return;
-        }
-
-        // C. FORCE RETURN BUTTON (ADMIN & EMPLOYEE)
-        if (btn.innerText.includes('Return') || btn.innerHTML.includes('fa-undo') || btn.innerHTML.includes('fa-arrow-rotate-left')) {
-          e.preventDefault(); e.stopPropagation();
-          const row = btn.closest('tr');
-          
-          if (row) {
-            // Admin Return
-            const m = document.getElementById('adminReturnModal');
-            if (m) m.classList.remove('hidden');
-          } else {
-            // Employee Mobile Return
-            const card = btn.closest('.catalog-card') || btn.closest('div[style]') || btn.parentElement.parentElement;
-            if (card) {
-              let id = "Item", name = "Material", stock = "0";
-              const text = card.innerText;
-              const idMatch = text.match(/\b(\d{6,})\b/);
-              if (idMatch) id = idMatch[1];
-              const stockMatch = text.match(/([-0-9]+)\s*units/i);
-              if (stockMatch) stock = stockMatch[1];
-              
-              const nameEl = card.querySelector('h3, h4, strong, .item-name') || card.querySelector('div:nth-child(2)');
-              if (nameEl && nameEl.innerText.trim() !== '') {
-                  name = nameEl.innerText.trim().split('\n')[0];
-              }
-
-              const m = document.getElementById('mobileReturnModal');
-              if (m) {
-                const idEl = document.getElementById('returnModalItemId');
-                const nameEl = document.getElementById('returnModalItemName');
-                const stockEl = document.getElementById('returnModalStock');
-                const qtyInput = document.getElementById('returnQtyInput');
-                
-                if (idEl) idEl.innerText = id;
-                if (nameEl) nameEl.innerText = name;
-                if (stockEl) stockEl.innerText = stock;
-                if (qtyInput) qtyInput.value = 1;
-                
-                m.classList.remove('hidden');
-              }
-            }
-          }
-          return;
-        }
-
-        // D. CHECKOUT / TAKE BUTTON (NEGATIVE STOCK BLOCKER & FORCE OPEN)
         if (btn.innerText.includes('Take') || btn.innerHTML.includes('fa-cart-arrow-down')) {
           let stock = NaN;
-          let id = "Item", name = "Material";
-          
           const row = btn.closest('tr');
-          const card = btn.closest('.catalog-card') || btn.closest('div[style]') || btn.parentElement.parentElement;
-          
-          // Check Admin Table
-          if (row && row.cells.length > 3) {
-            stock = parseInt(row.cells[3].innerText);
-            id = row.cells[0]?.innerText.trim() || id;
-            name = row.cells[1]?.innerText.trim() || name;
-          } 
-          // Check Employee Card
-          else if (card) {
-            const text = card.innerText;
-            const stockMatch = text.match(/([-0-9]+)\s*units/i);
-            if (stockMatch) stock = parseInt(stockMatch[1]);
-            const idMatch = text.match(/\b(\d{6,})\b/);
-            if (idMatch) id = idMatch[1];
-            const nameEl = card.querySelector('h3, h4, strong, .item-name') || card.querySelector('div:nth-child(2)');
-            if (nameEl) name = nameEl.innerText.trim().split('\n')[0];
-          }
-
-          // BLOCK IF OUT OF STOCK
-          if (!isNaN(stock) && stock <= 0) {
-            e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
-            alert('CRITICAL ERROR: This item is Out of Stock (0 or Negative). You cannot check it out.');
-            return false;
-          }
-
-          // IF IN STOCK, FORCE OPEN THE MODAL
-          e.preventDefault(); e.stopPropagation();
-          if (row) {
-            const m = document.getElementById('adminSelfCheckoutModal');
-            if(m) m.classList.remove('hidden');
-          } else {
-            const m = document.getElementById('mobileCheckoutModal');
-            if(m) {
-              const idEl = document.getElementById('checkoutModalItemId');
-              const nameEl = document.getElementById('checkoutModalItemName');
-              const stockEl = document.getElementById('checkoutModalStock');
-              const qtyInput = document.getElementById('checkoutQtyInput');
-              
-              if (idEl) idEl.innerText = id;
-              if (nameEl) nameEl.innerText = name;
-              if (stockEl) stockEl.innerText = isNaN(stock) ? 0 : stock;
-              if (qtyInput) qtyInput.value = 1;
-              
-              m.classList.remove('hidden');
+          if (row && row.cells.length > 3) stock = parseInt(row.cells[3].innerText);
+          else {
+            const card = btn.closest('.catalog-card') || btn.closest('div[style]') || btn.parentElement.parentElement;
+            if (card && card.innerText) {
+              const match = card.innerText.match(/([-0-9]+)\s*units/i);
+              if (match) stock = parseInt(match[1]);
             }
           }
-          return;
-        }
-
-        // E. Block Final Confirm Checkout if Qty > Stock
-        if (btn.id === 'confirmMobileCheckoutBtn' || btn.id === 'confirmAdminSelfCheckoutBtn') {
-          const stockBadge = btn.id === 'confirmMobileCheckoutBtn' ? document.getElementById('checkoutModalStock') : document.getElementById('adminSelfCurrentStockBadge');
-          const qtyInput = btn.id === 'confirmMobileCheckoutBtn' ? document.getElementById('checkoutQtyInput') : document.getElementById('adminSelfQuantity');
-          
-          if (stockBadge && qtyInput) {
-              const checkStock = parseInt(stockBadge.innerText);
-              const checkQty = parseInt(qtyInput.value);
-              if (checkStock <= 0 || checkQty > checkStock) {
-                  e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
-                  alert('CRITICAL ERROR: Checkout quantity exceeds available stock. Transaction blocked.');
-                  return false;
-              }
+          if (!isNaN(stock) && stock <= 0) {
+            e.preventDefault(); e.stopImmediatePropagation();
+            alert('CRITICAL ERROR: This item is Out of Stock (0 or Negative). You cannot check it out.');
           }
         }
-      }, true);
-
-      // 3. EMERGENCY DATABASE FETCH FOR LEDGER TABLE (Runs if original JS fails)
+      }, true); // Important: Runs BEFORE app.js to stop execution safely
+      
+      // EMERGENCY LEDGER DATA FETCHER
       setTimeout(() => {
-        try {
-          const tbody = document.getElementById('ledgerTableBody');
-          if (tbody && tbody.innerHTML.trim() === '') {
-            const db = firebase.firestore();
-            db.collection('transactions').orderBy('Timestamp', 'desc').limit(50).get()
-            .then(snap => {
-              if(snap.empty) return db.collection('ledger').orderBy('Timestamp', 'desc').limit(50).get();
-              return snap;
-            })
-            .then(snap => {
-              if(!snap || snap.empty) return;
-              let html = '';
-              snap.forEach(doc => {
-                const d = doc.data();
-                const typeColor = (d.Transaction_Type || '').toUpperCase() === 'RETURN' ? 'color:green' : 'color:red';
-                const typeText = (d.Transaction_Type || 'TAKE').toUpperCase();
-                html += `<tr>
-                  <td><strong>${d.Transaction_ID || doc.id}</strong><br><small style="${typeColor}; font-weight:bold;">${typeText}</small></td>
-                  <td>${d.Date_Formatted || ''} ${d.Time_Formatted || ''}</td>
-                  <td>${d.Employee_Name || d.Employee_ID || 'Staff'}</td>
-                  <td>${d.Item_Name || d.Item_ID || 'Material'}</td>
-                  <td style="text-align:right; font-weight:bold;">${d.Quantity || Math.abs(d.Net_Stock_Change || 0) || 1}</td>
-                  <td style="text-align:center;"><span style="background:#dcfce7; color:#166534; padding:4px 8px; border-radius:12px; font-size:12px; font-weight:bold;">Synced</span></td>
-                </tr>`;
-              });
-              tbody.innerHTML = html;
-            }).catch(e => console.log("Fetch bypass running"));
-          }
-        } catch(err) {}
-      }, 1500); 
+        const tbody = document.getElementById('ledgerTableBody');
+        if (tbody && tbody.innerHTML.trim() === '') {
+          const db = firebase.firestore();
+          db.collection('transactions').orderBy('Timestamp', 'desc').limit(50).get()
+          .then(snap => {
+            if(snap.empty) return db.collection('ledger').orderBy('Timestamp', 'desc').limit(50).get();
+            return snap;
+          })
+          .then(snap => {
+            if(!snap || snap.empty) return;
+            let html = '';
+            snap.forEach(doc => {
+              const d = doc.data();
+              const typeColor = (d.Transaction_Type || '').toUpperCase() === 'RETURN' ? 'color:green' : 'color:red';
+              const typeText = (d.Transaction_Type || 'TAKE').toUpperCase();
+              html += `<tr>
+                <td><strong>${d.Transaction_ID || doc.id}</strong><br><small style="${typeColor}; font-weight:bold;">${typeText}</small></td>
+                <td>${d.Date_Formatted || ''} ${d.Time_Formatted || ''}</td>
+                <td>${d.Employee_Name || d.Employee_ID || 'Staff'}</td>
+                <td>${d.Item_Name || d.Item_ID || 'Material'}</td>
+                <td style="text-align:right; font-weight:bold;">${d.Quantity || Math.abs(d.Net_Stock_Change || 0) || 1}</td>
+                <td style="text-align:center;"><span style="background:#dcfce7; color:#166534; padding:4px 8px; border-radius:12px; font-size:12px; font-weight:bold;">Synced</span></td>
+              </tr>`;
+            });
+            tbody.innerHTML = html;
+          }).catch(e => console.log(e));
+        }
+      }, 1500);
     });
   </script>
 </body>
