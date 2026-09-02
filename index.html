@@ -35,9 +35,6 @@
     .header-left { display: flex !important; align-items: center !important; }
     .header-right { display: flex !important; align-items: center !important; gap: 10px !important; margin-top: 0 !important; flex-wrap: wrap !important; }
     
-    /* FIX FOR EDIT BUTTON NOT CLICKING IN JS */
-    .industrial-table button i, .industrial-table button span { pointer-events: none !important; }
-    
     @media (max-width: 768px) {
       .app-header { flex-direction: column !important; align-items: flex-start !important; }
       .header-right { margin-top: 15px !important; width: 100% !important; justify-content: flex-start !important; }
@@ -66,7 +63,7 @@
 </head>
 <body class="enterprise-theme">
 
-  <!-- HIDDEN ELEMENTS FOR JS -->
+  <!-- HIDDEN ELEMENTS REQUIRED FOR JS TO NOT CRASH -->
   <div class="global-view-switcher" id="globalTopBar">
     <div class="active-session-pill hidden" id="activeSessionPill"><span id="sessionRoleIcon"></span><span id="sessionRoleLabel"></span><button id="globalLogoutBtn"></button></div>
     <button id="globalNetworkToggleBtn"><span id="globalNetStatusText"></span></button>
@@ -118,7 +115,7 @@
           <button id="adminHeaderSelfCheckoutBtn" class="btn btn-cyan self-checkout-btn"><i class="fa-solid fa-cart-arrow-down"></i><span>Take Material</span></button>
           <button id="quickExportBtn" class="btn btn-secondary"><i class="fa-solid fa-file-excel"></i><span>Export Ledger</span></button>
           
-          <!-- NEW LOG OUT BUTTON -->
+          <!-- CORRECT LOG OUT BUTTON -->
           <button id="adminLogoutBtn" class="btn" style="background: #fee2e2; border: 1px solid #fecaca; color: #991b1b; padding: 8px 16px; border-radius: 8px; font-weight: 600; display: flex; align-items: center; gap: 8px; margin-left: 10px;" title="Sign Out">
             <i class="fa-solid fa-right-from-bracket"></i> <span>Sign Out</span>
           </button>
@@ -271,7 +268,7 @@
   </div>
 
   <!-- =========================================================================
-       CRITICAL POPUP MODALS (RESTORED COMPLETELY)
+       CRITICAL POPUP MODALS
        ========================================================================= -->
 
   <!-- 1. Admin Auth Modal -->
@@ -496,7 +493,7 @@
     </div>
   </div>
 
-  <!-- 12. Add/Edit Item Modal -->
+  <!-- 12. Add Item Modal -->
   <div id="itemModal" class="modal-backdrop hidden">
     <div class="modal-dialog">
       <div class="modal-header"><div class="modal-title-wrap"><h3>Inventory Item</h3></div><button class="modal-close-btn" data-close-modal="itemModal"><i class="fa-solid fa-xmark"></i></button></div>
@@ -512,7 +509,7 @@
     </div>
   </div>
 
-  <!-- 13. Edit Item Modal (Fallback for JS) -->
+  <!-- 13. Edit Item Modal -->
   <div id="editItemModal" class="modal-backdrop hidden">
     <div class="modal-dialog">
       <div class="modal-header"><div class="modal-title-wrap"><h3>Edit Item</h3></div><button class="modal-close-btn" data-close-modal="editItemModal"><i class="fa-solid fa-xmark"></i></button></div>
@@ -529,11 +526,58 @@
   </div>
 
   <div id="toastContainer" class="toast-container"></div>
+  
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="js/firebase-config.js"></script>
   
+  <!-- BULLETPROOF ENGINE FIXES & NEGATIVE STOCK BLOCKER -->
   <script>
+    // 1. Fix Button Clicks (Add, Edit, Delete) & Prevent Negative Stock Checkout
+    document.addEventListener('click', function(e) {
+      // Route icon clicks to their parent buttons (Fixes Add/Edit clicks)
+      let btn = e.target.closest('button');
+      if (!btn) return;
+
+      // Block Negative Stock Checkouts directly from the Table
+      if (btn.innerText.includes('Take') || btn.classList.contains('btn-cyan') || btn.querySelector('.fa-cart-arrow-down')) {
+        let row = btn.closest('tr');
+        if (row && row.cells.length > 3) {
+          let stockCell = row.cells[3].innerText;
+          let stock = parseInt(stockCell);
+          if (stock <= 0) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            alert('CRITICAL ERROR: This item is Out of Stock (0 or Negative). You cannot check it out.');
+            return false;
+          }
+        }
+      }
+    }, true);
+
+    // 2. Block Negative Stock Checkouts from the Modal Form
+    document.addEventListener('submit', function(e) {
+      if (e.target.id === 'adminSelfCheckoutForm' || e.target.id === 'mobileCheckoutModal') {
+        let stockBadge = document.getElementById('adminSelfCurrentStockBadge') || document.getElementById('checkoutModalStock');
+        let qtyInput = document.getElementById('adminSelfQuantity') || document.getElementById('checkoutQtyInput');
+        
+        if (stockBadge && qtyInput) {
+          let stock = parseInt(stockBadge.innerText);
+          let qty = parseInt(qtyInput.value);
+          
+          if (stock <= 0 || qty > stock) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            alert('CRITICAL ERROR: Checkout quantity (' + qty + ') exceeds available stock (' + stock + '). Transaction blocked.');
+            return false;
+          }
+        }
+      }
+    }, true);
+
+    // 3. Real-Time Network Detection
     window.addEventListener('DOMContentLoaded', () => {
       const updateNetStatus = () => {
         const isOnline = navigator.onLine; 
@@ -549,6 +593,7 @@
       setTimeout(updateNetStatus, 500); 
     });
   </script>
+  
   <script src="js/app.js"></script>
 </body>
 </html>
