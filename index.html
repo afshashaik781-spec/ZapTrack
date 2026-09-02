@@ -270,20 +270,233 @@
     </div>
   </div>
 
-  <!-- MODALS SECTION -->
-  <div id="adminAuthModal" class="modal-backdrop hidden"></div>
-  <div id="adminSelfCheckoutModal" class="modal-backdrop hidden"></div>
-  <div id="adminReturnModal" class="modal-backdrop hidden"></div>
-  <div id="mobileCheckoutModal" class="modal-backdrop mobile-bottomsheet-backdrop hidden"></div>
-  <div id="mobileReturnModal" class="modal-backdrop mobile-bottomsheet-backdrop hidden"></div>
-  <div id="gatekeeperPassModal" class="gatekeeper-fullscreen-overlay hidden"></div>
-  <div id="exportModal" class="modal-backdrop hidden"></div>
-  <div id="employeeModal" class="modal-backdrop hidden"></div>
-  <div id="simulateModal" class="modal-backdrop hidden"></div>
-  <div id="uploadInventoryModal" class="modal-backdrop hidden"></div>
-  <div id="uploadEmployeesModal" class="modal-backdrop hidden"></div>
+  <!-- =========================================================================
+       CRITICAL POPUP MODALS (RESTORED COMPLETELY)
+       ========================================================================= -->
 
-  <!-- MAIN ADD/EDIT ITEM MODAL -->
+  <!-- 1. Admin Auth Modal -->
+  <div id="adminAuthModal" class="modal-backdrop hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-wrap"><i class="fa-solid fa-user-shield modal-title-icon"></i><h3>Administrator Authentication</h3></div>
+        <button class="modal-close-btn" data-close-modal="adminAuthModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="adminAuthForm">
+        <div class="modal-body">
+          <div class="form-group"><label for="adminUsernameInput">Name</label><div class="input-with-icon"><i class="fa-solid fa-user"></i><input type="text" id="adminUsernameInput" class="form-input" required></div></div>
+          <div class="form-group"><label for="adminPasswordInput">Employee ID</label><div class="input-with-icon"><i class="fa-solid fa-id-badge"></i><input type="password" id="adminPasswordInput" class="form-input" required></div></div>
+          <div id="adminAuthErrorMessage" class="login-error-alert hidden"><i class="fa-solid fa-circle-exclamation"></i><span id="adminAuthErrorText">Denied</span></div>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary" data-close-modal="adminAuthModal">Cancel</button><button type="submit" class="btn btn-primary" id="adminAuthSubmitBtn">Log In</button></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. Admin Self-Checkout Modal -->
+  <div id="adminSelfCheckoutModal" class="modal-backdrop hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-wrap"><i class="fa-solid fa-cart-arrow-down modal-title-icon"></i><h3>Admin Checkout</h3></div>
+        <button class="modal-close-btn" data-close-modal="adminSelfCheckoutModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="adminSelfCheckoutForm">
+        <div class="modal-body">
+          <div class="form-group"><label for="adminSelfItemSelect">Item</label><select id="adminSelfItemSelect" class="form-select" required></select></div>
+          <div class="form-row-2col">
+            <div class="form-group"><label>Stock</label><div class="static-badge-display" id="adminSelfCurrentStockBadge">0 units</div></div>
+            <div class="form-group"><label for="adminSelfQuantity">Qty</label><input type="number" id="adminSelfQuantity" class="form-input" min="1" value="1" required></div>
+          </div>
+          <div class="form-group"><label for="adminSelfPurpose">Purpose</label><input type="text" id="adminSelfPurpose" class="form-input"></div>
+          <div class="checkout-summary-box"><div class="summary-line"><span>Remaining:</span><strong id="adminSelfRemainingPreview">0 units</strong></div></div>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary" data-close-modal="adminSelfCheckoutModal">Cancel</button><button type="submit" class="btn btn-warning" id="confirmAdminSelfCheckoutBtn">Checkout</button></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. Admin Return Modal -->
+  <div id="adminReturnModal" class="modal-backdrop hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-wrap"><i class="fa-solid fa-arrow-rotate-left modal-title-icon"></i><h3>Process Return</h3></div>
+        <button class="modal-close-btn" data-close-modal="adminReturnModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="adminReturnForm">
+        <div class="modal-body">
+          <div class="form-group"><label for="adminReturnItemSelect">Item</label><select id="adminReturnItemSelect" class="form-select" required></select></div>
+          <div class="form-row-2col">
+            <div class="form-group"><label>Stock</label><div class="static-badge-display" id="adminReturnCurrentStockBadge">0</div></div>
+            <div class="form-group"><label for="adminReturnQuantity">Qty</label><input type="number" id="adminReturnQuantity" class="form-input" min="1" value="1" required></div>
+          </div>
+          <div class="form-group"><label for="adminReturnEmployeeInput">Returned By</label><input type="text" id="adminReturnEmployeeInput" class="form-input"></div>
+          <div class="checkout-summary-box"><div class="summary-line"><span>Updated Stock:</span><strong id="adminReturnNewStockPreview">0</strong></div></div>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary" data-close-modal="adminReturnModal">Cancel</button><button type="submit" class="btn btn-primary" id="confirmAdminReturnBtn">Return</button></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. Mobile Checkout Modal -->
+  <div id="mobileCheckoutModal" class="modal-backdrop mobile-bottomsheet-backdrop hidden">
+    <div class="mobile-bottomsheet-dialog">
+      <div class="bottomsheet-handle"></div>
+      <div class="bottomsheet-header">
+        <div class="bottomsheet-title-wrap"><span class="item-id-pill" id="checkoutModalItemId">ID</span><h3 id="checkoutModalItemName">Item</h3></div>
+        <button class="modal-close-btn" data-close-modal="mobileCheckoutModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="bottomsheet-body">
+        <div class="checkout-stock-indicator"><span class="stock-ind-label">Stock:</span><span class="stock-ind-value" id="checkoutModalStock">0</span></div>
+        <div class="checkout-quantity-section">
+          <label class="qty-section-label">Quantity Required</label>
+          <div class="qty-stepper-control">
+            <button type="button" class="stepper-btn minus" id="qtyMinusBtn"><i class="fa-solid fa-minus"></i></button>
+            <input type="number" id="checkoutQtyInput" class="stepper-input" min="1" value="1">
+            <button type="button" class="stepper-btn plus" id="qtyPlusBtn"><i class="fa-solid fa-plus"></i></button>
+          </div>
+        </div>
+        <div class="checkout-summary-box">
+          <div class="summary-line"><span>By:</span><strong id="checkoutSummaryEmployee">Name</strong></div>
+          <div class="summary-line"><span>Remaining:</span><strong id="checkoutRemainingPreview">0</strong></div>
+          <div class="summary-line" id="checkoutNetworkModeLine"><span>Mode:</span><span class="badge-network-state" id="checkoutNetworkStateBadge">Online</span></div>
+        </div>
+      </div>
+      <div class="bottomsheet-footer"><button type="button" class="btn btn-warning btn-block confirm-checkout-btn" id="confirmMobileCheckoutBtn">Confirm Checkout</button></div>
+    </div>
+  </div>
+
+  <!-- 5. Mobile Return Modal -->
+  <div id="mobileReturnModal" class="modal-backdrop mobile-bottomsheet-backdrop hidden">
+    <div class="mobile-bottomsheet-dialog">
+      <div class="bottomsheet-handle"></div>
+      <div class="bottomsheet-header">
+        <div class="bottomsheet-title-wrap"><span class="item-id-pill" id="returnModalItemId">ID</span><h3 id="returnModalItemName">Item</h3></div>
+        <button class="modal-close-btn" data-close-modal="mobileReturnModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="bottomsheet-body">
+        <div class="checkout-stock-indicator"><span class="stock-ind-label">Stock:</span><span class="stock-ind-value" id="returnModalStock">0</span></div>
+        <div class="checkout-quantity-section">
+          <label class="qty-section-label">Qty to Return</label>
+          <div class="qty-stepper-control">
+            <button type="button" class="stepper-btn minus" id="returnQtyMinusBtn"><i class="fa-solid fa-minus"></i></button>
+            <input type="number" id="returnQtyInput" class="stepper-input" min="1" value="1">
+            <button type="button" class="stepper-btn plus" id="returnQtyPlusBtn"><i class="fa-solid fa-plus"></i></button>
+          </div>
+        </div>
+        <div class="checkout-summary-box">
+          <div class="summary-line"><span>By:</span><strong id="returnSummaryEmployee">Name</strong></div>
+          <div class="summary-line"><span>New Stock:</span><strong id="returnNewStockPreview">0</strong></div>
+        </div>
+      </div>
+      <div class="bottomsheet-footer"><button type="button" class="btn btn-outline-cyan btn-block confirm-return-btn" id="confirmMobileReturnBtn">Confirm Return</button></div>
+    </div>
+  </div>
+
+  <!-- 6. Gatekeeper Pass Modal -->
+  <div id="gatekeeperPassModal" class="gatekeeper-fullscreen-overlay hidden">
+    <div class="gatekeeper-pass-container">
+      <div class="pass-security-header"><div class="pass-security-badge">ZAP TRACK &bull; SECURITY PASS</div></div>
+      <div class="pass-verified-hero"><div class="checkmark-pulse-wrapper"><div class="checkmark-circle"><i class="fa-solid fa-check"></i></div></div><h1 class="pass-title">VERIFIED</h1></div>
+      <div class="pass-time-card">
+        <div class="live-clock-banner"><span class="live-clock-label">CLOCK:</span><span class="live-clock-digits" id="passLiveClock"></span></div>
+        <div class="pass-exact-timestamp"><strong id="passExactTimestamp"></strong></div>
+      </div>
+      <div class="pass-details-card">
+        <div class="pass-detail-row highlight-emp"><div class="detail-label">EMPLOYEE</div><div class="detail-value-emp"><div class="emp-name-large" id="passEmployeeName"></div><div class="emp-id-badge" id="passEmployeeId"></div></div></div>
+        <div class="pass-detail-row highlight-material"><div class="detail-label">MATERIAL</div><div class="detail-value-material"><div class="material-name-large" id="passItemName"></div><div class="material-qty-badge"><span class="qty-number" id="passQuantityTaken"></span></div></div></div>
+        <div class="pass-detail-row txn-row"><div class="detail-label">TXN</div><div class="pass-audit-wrap"><div class="txn-code" id="passTransactionId"></div><div id="passSyncStatusBadge" class="pass-sync-tag online">Verified</div></div></div>
+      </div>
+      <div class="pass-actions"><button type="button" class="btn btn-block pass-done-btn" id="gatekeeperDoneBtn">Done / New Checkout</button></div>
+    </div>
+  </div>
+
+  <!-- 7. Export Modal -->
+  <div id="exportModal" class="modal-backdrop hidden">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-header"><div class="modal-title-wrap"><h3>Export Ledger</h3></div><button class="modal-close-btn" data-close-modal="exportModal"><i class="fa-solid fa-xmark"></i></button></div>
+      <div class="modal-body">
+        <div class="export-filter-card">
+          <div class="export-range-options">
+            <label class="radio-option"><input type="radio" name="exportDateOption" value="this-month" checked><div class="radio-body"><span class="radio-title">Current Month (<span id="exportMonthName"></span>)</span></div></label>
+            <label class="radio-option"><input type="radio" name="exportDateOption" value="last-30"><div class="radio-body"><span class="radio-title">Last 30 Days</span></div></label>
+            <label class="radio-option"><input type="radio" name="exportDateOption" value="all"><div class="radio-body"><span class="radio-title">All Transactions</span></div></label>
+            <label class="radio-option"><input type="radio" name="exportDateOption" value="custom"><div class="radio-body"><span class="radio-title">Custom</span><div class="custom-range-inputs"><input type="date" id="exportDateFrom" class="form-control-date"><span>to</span><input type="date" id="exportDateTo" class="form-control-date"></div></div></label>
+          </div>
+        </div>
+        <div class="export-preview-box"><div class="preview-header"><span class="record-counter"><strong id="exportRecordCount">0</strong> transactions selected</span></div></div>
+      </div>
+      <div class="modal-footer"><button type="button" class="btn btn-secondary" data-close-modal="exportModal">Cancel</button><button type="button" class="btn btn-warning export-btn-action" id="triggerDownloadCsvBtn">Download CSV</button></div>
+    </div>
+  </div>
+
+  <!-- 8. Add Employee Modal -->
+  <div id="employeeModal" class="modal-backdrop hidden">
+    <div class="modal-dialog">
+      <div class="modal-header"><div class="modal-title-wrap"><h3>Add Employee</h3></div><button class="modal-close-btn" data-close-modal="employeeModal"><i class="fa-solid fa-xmark"></i></button></div>
+      <form id="employeeForm">
+        <div class="modal-body">
+          <div class="form-group"><label for="empInputId">ID</label><input type="text" id="empInputId" class="form-input" required></div>
+          <div class="form-group"><label for="empInputName">Name</label><input type="text" id="empInputName" class="form-input" required></div>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary" data-close-modal="employeeModal">Cancel</button><button type="submit" class="btn btn-primary" id="saveEmployeeBtn">Save</button></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 9. Simulate Modal -->
+  <div id="simulateModal" class="modal-backdrop hidden">
+    <div class="modal-dialog">
+      <div class="modal-header"><div class="modal-title-wrap"><h3>Simulate Checkout</h3></div><button class="modal-close-btn" data-close-modal="simulateModal"><i class="fa-solid fa-xmark"></i></button></div>
+      <form id="simulateForm">
+        <div class="modal-body">
+          <div class="form-group"><label for="simEmployeeSelect">Employee</label><select id="simEmployeeSelect" class="form-select" required></select></div>
+          <div class="form-group"><label for="simItemSelect">Item</label><select id="simItemSelect" class="form-select" required></select></div>
+          <div class="form-row-2col">
+            <div class="form-group"><label for="simQuantity">Qty</label><input type="number" id="simQuantity" class="form-input" min="1" value="1" required></div>
+            <div class="form-group"><label for="simSyncStatus">Network</label><select id="simSyncStatus" class="form-select"><option value="true">Online</option><option value="false">Offline</option></select></div>
+          </div>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary" data-close-modal="simulateModal">Cancel</button><button type="submit" class="btn btn-primary">Simulate</button></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 10. Upload Inventory Modal -->
+  <div id="uploadInventoryModal" class="modal-backdrop hidden">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-header"><div class="modal-title-wrap"><h3>Upload Inventory (CSV)</h3></div><button class="modal-close-btn" data-close-modal="uploadInventoryModal"><i class="fa-solid fa-xmark"></i></button></div>
+      <div class="modal-body">
+        <div class="csv-upload-container">
+          <div class="csv-instructions-card"><div class="inst-title"><button type="button" id="downloadInventoryTemplateBtn" class="btn-download-template">Download Template</button></div></div>
+          <div class="csv-dropzone" id="inventoryDropzone"><input type="file" id="inventoryCsvFileInput" class="csv-file-input" accept=".csv"></div>
+          <div id="inventoryAttachedFileCard" class="attached-file-card hidden"><div class="attached-file-info"><div id="inventoryAttachedFileName"></div><div id="inventoryAttachedFileSize"></div></div><button type="button" id="removeInventoryFileBtn" class="btn-remove-file">X</button></div>
+          <div class="form-group"><label for="inventoryCsvTextarea">Paste CSV Text:</label><textarea id="inventoryCsvTextarea" class="form-textarea" rows="3"></textarea></div>
+          <div id="inventoryCsvPreviewContainer" class="csv-preview-container hidden"><div class="csv-preview-header"><span id="inventoryPreviewValidCount"></span><span id="inventoryPreviewInvalidCount" class="hidden"></span></div><div class="csv-preview-table-wrap"><table class="csv-preview-table"><tbody id="inventoryPreviewTableBody"></tbody></table></div></div>
+          <div class="import-mode-options"><label><input type="radio" name="inventoryImportMode" value="append" checked> Append</label><label><input type="radio" name="inventoryImportMode" value="replace"> Replace all</label></div>
+        </div>
+      </div>
+      <div class="modal-footer"><button type="button" class="btn btn-secondary" data-close-modal="uploadInventoryModal">Cancel</button><button type="button" class="btn btn-warning" id="saveUploadedInventoryBtn" disabled>Save to Database</button></div>
+    </div>
+  </div>
+
+  <!-- 11. Upload Employees Modal -->
+  <div id="uploadEmployeesModal" class="modal-backdrop hidden">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-header"><div class="modal-title-wrap"><h3>Upload Employees (CSV)</h3></div><button class="modal-close-btn" data-close-modal="uploadEmployeesModal"><i class="fa-solid fa-xmark"></i></button></div>
+      <div class="modal-body">
+        <div class="csv-upload-container">
+          <div class="csv-instructions-card"><div class="inst-title"><button type="button" id="downloadEmployeesTemplateBtn" class="btn-download-template">Download Template</button></div></div>
+          <div class="csv-dropzone" id="employeesDropzone"><input type="file" id="employeesCsvFileInput" class="csv-file-input" accept=".csv"></div>
+          <div id="employeesAttachedFileCard" class="attached-file-card hidden"><div class="attached-file-info"><div id="employeesAttachedFileName"></div><div id="employeesAttachedFileSize"></div></div><button type="button" id="removeEmployeesFileBtn" class="btn-remove-file">X</button></div>
+          <div class="form-group"><label for="employeesCsvTextarea">Paste CSV Text:</label><textarea id="employeesCsvTextarea" class="form-textarea" rows="3"></textarea></div>
+          <div id="employeesCsvPreviewContainer" class="csv-preview-container hidden"><div class="csv-preview-header"><span id="employeesPreviewValidCount"></span><span id="employeesPreviewInvalidCount" class="hidden"></span></div><div class="csv-preview-table-wrap"><table class="csv-preview-table"><tbody id="employeesPreviewTableBody"></tbody></table></div></div>
+          <div class="import-mode-options"><label><input type="radio" name="employeesImportMode" value="append" checked> Append</label><label><input type="radio" name="employeesImportMode" value="replace"> Replace all</label></div>
+        </div>
+      </div>
+      <div class="modal-footer"><button type="button" class="btn btn-secondary" data-close-modal="uploadEmployeesModal">Cancel</button><button type="button" class="btn btn-primary" id="saveUploadedEmployeesBtn" disabled>Save to Database</button></div>
+    </div>
+  </div>
+
+  <!-- 12. Add/Edit Item Modal -->
   <div id="itemModal" class="modal-backdrop hidden">
     <div class="modal-dialog">
       <div class="modal-header"><div class="modal-title-wrap"><h3>Inventory Item</h3></div><button class="modal-close-btn" data-close-modal="itemModal"><i class="fa-solid fa-xmark"></i></button></div>
@@ -299,7 +512,7 @@
     </div>
   </div>
 
-  <!-- FALLBACK EDIT ITEM MODAL (IN CASE JS EXPECTS IT) -->
+  <!-- 13. Edit Item Modal (Fallback for JS) -->
   <div id="editItemModal" class="modal-backdrop hidden">
     <div class="modal-dialog">
       <div class="modal-header"><div class="modal-title-wrap"><h3>Edit Item</h3></div><button class="modal-close-btn" data-close-modal="editItemModal"><i class="fa-solid fa-xmark"></i></button></div>
