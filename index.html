@@ -20,7 +20,7 @@
     .global-view-switcher { display: none !important; }
     .admin-profile { display: none !important; }
 
-    /* DESKTOP HEADER ALIGNMENT FIXED */
+    /* DESKTOP HEADER ALIGNMENT */
     .app-header {
       padding: 15px 30px !important;
       background: #ffffff !important;
@@ -104,12 +104,12 @@
           </div>
         </div>
         <div class="header-right">
+          <!-- UPLOAD INVENTORY & EMPLOYEES BUTTONS -->
           <button id="adminHeaderUploadInventoryBtn" class="btn btn-warning"><i class="fa-solid fa-file-arrow-up"></i><span>Upload Inventory</span></button>
           <button id="adminHeaderUploadEmployeesBtn" class="btn btn-secondary"><i class="fa-solid fa-users-viewfinder"></i><span>Upload Employees</span></button>
           <button id="adminHeaderSelfCheckoutBtn" class="btn btn-cyan self-checkout-btn"><i class="fa-solid fa-cart-arrow-down"></i><span>Take Material</span></button>
           <button id="quickExportBtn" class="btn btn-secondary"><i class="fa-solid fa-file-excel"></i><span>Export Ledger</span></button>
           
-          <!-- PROFESSIONAL LOG OUT BUTTON -->
           <button id="adminLogoutBtn" class="btn" style="background: #fee2e2; border: 1px solid #fecaca; color: #991b1b; padding: 8px 16px; border-radius: 8px; font-weight: 600; display: flex; align-items: center; gap: 8px; margin-left: 10px;" title="Sign Out">
             <i class="fa-solid fa-right-from-bracket"></i> <span>Sign Out</span>
           </button>
@@ -140,10 +140,7 @@
               <div class="card-action-group">
                 <button id="openUploadInventoryBtn" class="btn btn-warning"><i class="fa-solid fa-file-arrow-up"></i><span>Upload</span></button>
                 <button id="openAdminSelfCheckoutBtn" class="btn btn-secondary"><i class="fa-solid fa-cart-arrow-down"></i><span>Take Material</span></button>
-                
-                <!-- ADD ITEM BUTTON -->
                 <button id="openAddItemBtn" class="btn btn-primary"><i class="fa-solid fa-plus"></i><span>Add Item</span></button>
-                
                 <button id="refreshInventoryBtn" class="btn btn-secondary btn-icon"><i class="fa-solid fa-arrows-rotate"></i></button>
               </div>
             </div>
@@ -165,7 +162,6 @@
           </div>
         </section>
 
-        <!-- LEDGER TAB -->
         <section id="ledgerTab" class="tab-content">
           <div class="section-card">
             <div class="card-header-bar">
@@ -189,7 +185,6 @@
           </div>
         </section>
 
-        <!-- EMPLOYEES TAB -->
         <section id="employeesTab" class="tab-content">
           <div class="section-card">
             <div class="card-header-bar">
@@ -211,8 +206,86 @@
     </div>
   </div>
 
-  <!-- MODALS SECTION -->
-  
+  <!-- VIEW 2: EMPLOYEE MOBILE EXPERIENCE -->
+  <div id="mobileViewContainer" class="view-wrapper">
+    <div class="mobile-outer-wrapper">
+      <div class="mobile-device-shell" id="mobileDeviceShell">
+        <div id="mobileCatalogScreen" class="mobile-subview active">
+          <header class="mobile-app-header">
+            <div class="mobile-header-user">
+              <div class="mobile-nav-logo-card"><img src="assets/images/jsw-logo.png" alt="JSW" class="mobile-nav-logo-img"></div>
+              <div class="mobile-user-info"><span class="mobile-user-name" id="mobileUserName">Employee</span><span class="mobile-user-empid" id="mobileUserEmpId">EMP-000</span></div>
+            </div>
+            <div class="mobile-header-actions">
+              <button id="mobileNetworkStatusBtn" class="network-badge online"><span class="pulse-dot-sm"></span><span class="net-text" id="mobileNetBadgeText">Online</span></button>
+              <button id="mobileLogoutBtn" class="mobile-header-icon-btn"><i class="fa-solid fa-right-from-bracket"></i></button>
+            </div>
+          </header>
+
+          <div class="mobile-catalog-toolbar">
+            <div class="catalog-heading-wrap"><h2>Electrical Consumables</h2></div>
+            <div class="mobile-search-bar"><i class="fa-solid fa-magnifying-glass"></i><input type="text" id="mobileSearchInput" placeholder="Search consumables..."></div>
+            <div class="mobile-filter-chips">
+              <button class="m-chip active" data-mfilter="all">All Items</button>
+              <button class="m-chip" data-mfilter="instock">In Stock</button>
+              <button class="m-chip" data-mfilter="low">Low Stock</button>
+            </div>
+          </div>
+          <div class="mobile-catalog-list" id="mobileCatalogList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       ALL MODALS RESTORED (UPLOAD INVENTORY, EMPLOYEES, EXPORT, ADD, EDIT)
+       ========================================================================= -->
+
+  <!-- Upload Inventory Modal -->
+  <div id="uploadInventoryModal" class="modal-backdrop hidden">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-header"><div class="modal-title-wrap"><h3>Upload Inventory (CSV)</h3></div><button class="modal-close-btn" data-close-modal="uploadInventoryModal"><i class="fa-solid fa-xmark"></i></button></div>
+      <div class="modal-body">
+        <div class="csv-upload-container">
+          <div class="csv-dropzone" id="inventoryDropzone"><input type="file" id="inventoryCsvFileInput" class="csv-file-input" accept=".csv"></div>
+          <div class="form-group"><label for="inventoryCsvTextarea">Paste CSV Text Directly:</label><textarea id="inventoryCsvTextarea" class="form-textarea" rows="4"></textarea></div>
+          <div id="inventoryCsvPreviewContainer" class="csv-preview-container hidden"><div class="csv-preview-table-wrap"><table class="csv-preview-table"><tbody id="inventoryPreviewTableBody"></tbody></table></div></div>
+        </div>
+      </div>
+      <div class="modal-footer"><button type="button" class="btn btn-secondary" data-close-modal="uploadInventoryModal">Cancel</button><button type="button" class="btn btn-warning" id="saveUploadedInventoryBtn">Save to Database</button></div>
+    </div>
+  </div>
+
+  <!-- Upload Employees Modal -->
+  <div id="uploadEmployeesModal" class="modal-backdrop hidden">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-header"><div class="modal-title-wrap"><h3>Upload Employees (CSV)</h3></div><button class="modal-close-btn" data-close-modal="uploadEmployeesModal"><i class="fa-solid fa-xmark"></i></button></div>
+      <div class="modal-body">
+        <div class="csv-upload-container">
+          <div class="csv-dropzone" id="employeesDropzone"><input type="file" id="employeesCsvFileInput" class="csv-file-input" accept=".csv"></div>
+          <div class="form-group"><label for="employeesCsvTextarea">Paste CSV Text Directly:</label><textarea id="employeesCsvTextarea" class="form-textarea" rows="4"></textarea></div>
+          <div id="employeesCsvPreviewContainer" class="csv-preview-container hidden"><div class="csv-preview-table-wrap"><table class="csv-preview-table"><tbody id="employeesPreviewTableBody"></tbody></table></div></div>
+        </div>
+      </div>
+      <div class="modal-footer"><button type="button" class="btn btn-secondary" data-close-modal="uploadEmployeesModal">Cancel</button><button type="button" class="btn btn-primary" id="saveUploadedEmployeesBtn">Save to Database</button></div>
+    </div>
+  </div>
+
+  <!-- Export Ledger Modal -->
+  <div id="exportModal" class="modal-backdrop hidden">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-header"><div class="modal-title-wrap"><h3>Export Ledger</h3></div><button class="modal-close-btn" data-close-modal="exportModal"><i class="fa-solid fa-xmark"></i></button></div>
+      <div class="modal-body">
+        <div class="export-filter-card">
+          <div class="export-range-options">
+            <label class="radio-option"><input type="radio" name="exportDateOption" value="all" checked><div class="radio-body"><span class="radio-title">All Transactions</span></div></label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer"><button type="button" class="btn btn-secondary" data-close-modal="exportModal">Cancel</button><button type="button" class="btn btn-warning export-btn-action" id="triggerDownloadCsvBtn">Download CSV</button></div>
+    </div>
+  </div>
+
   <!-- Add Item Modal -->
   <div id="itemModal" class="modal-backdrop hidden">
     <div class="modal-dialog">
@@ -241,6 +314,20 @@
           <div class="form-group"><label for="editItemInputBinLocation">Bin Location</label><input type="text" id="editItemInputBinLocation" class="form-input"></div>
         </div>
         <div class="modal-footer"><button type="button" class="btn btn-secondary" data-close-modal="editItemModal">Cancel</button><button type="submit" class="btn btn-primary" id="updateItemBtn">Update</button></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Employee Modal -->
+  <div id="employeeModal" class="modal-backdrop hidden">
+    <div class="modal-dialog">
+      <div class="modal-header"><div class="modal-title-wrap"><h3>Add Employee</h3></div><button class="modal-close-btn" data-close-modal="employeeModal"><i class="fa-solid fa-xmark"></i></button></div>
+      <form id="employeeForm">
+        <div class="modal-body">
+          <div class="form-group"><label for="empInputId">ID</label><input type="text" id="empInputId" class="form-input" required></div>
+          <div class="form-group"><label for="empInputName">Name</label><input type="text" id="empInputName" class="form-input" required></div>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary" data-close-modal="employeeModal">Cancel</button><button type="submit" class="btn btn-primary" id="saveEmployeeBtn">Save</button></div>
       </form>
     </div>
   </div>
@@ -279,6 +366,12 @@
     </div>
   </div>
 
+  <!-- Mobile Checkout & Return (Blank fallbacks to prevent crash) -->
+  <div id="mobileCheckoutModal" class="modal-backdrop hidden"></div>
+  <div id="mobileReturnModal" class="modal-backdrop hidden"></div>
+  <div id="gatekeeperPassModal" class="hidden"></div>
+  <div id="adminAuthModal" class="hidden"></div>
+
   <div id="toastContainer" class="toast-container"></div>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -286,30 +379,42 @@
   <script src="js/app.js"></script>
 
   <!-- =========================================================================
-       EMERGENCY FAIL-SAFE OVERRIDE SCRIPT (THIS FORCES ALL BUTTONS TO WORK)
+       ULTIMATE MASTER FAIL-SAFE (BINDS ALL BUTTONS TO OPEN MODALS FORCEFULLY)
        ========================================================================= -->
   <script>
     window.addEventListener('load', function() {
-      // 1. Force Log Out Button Connection
+      
+      // 1. Force Link EVERY Button to its Modal
+      const buttonModalMap = [
+        { btnId: 'openUploadInventoryBtn', modalId: 'uploadInventoryModal' },
+        { btnId: 'adminHeaderUploadInventoryBtn', modalId: 'uploadInventoryModal' },
+        { btnId: 'openUploadEmployeesBtn', modalId: 'uploadEmployeesModal' },
+        { btnId: 'adminHeaderUploadEmployeesBtn', modalId: 'uploadEmployeesModal' },
+        { btnId: 'openExportModalBtn', modalId: 'exportModal' },
+        { btnId: 'quickExportBtn', modalId: 'exportModal' },
+        { btnId: 'openAddItemBtn', modalId: 'itemModal' },
+        { btnId: 'openAddEmployeeBtn', modalId: 'employeeModal' }
+      ];
+
+      buttonModalMap.forEach(map => {
+        const btn = document.getElementById(map.btnId);
+        const modal = document.getElementById(map.modalId);
+        if (btn && modal) {
+          btn.addEventListener('click', (e) => {
+            e.preventDefault(); e.stopPropagation();
+            modal.classList.remove('hidden');
+          });
+        }
+      });
+
+      // 2. Force Log Out Button Connection
       const fakeLogout = document.getElementById('adminLogoutBtn');
       const realLogout = document.getElementById('globalLogoutBtn');
       if (fakeLogout && realLogout) {
         fakeLogout.addEventListener('click', (e) => { e.preventDefault(); realLogout.click(); });
       }
 
-      // 2. Force Add Item Modal to Open
-      const addBtn = document.getElementById('openAddItemBtn');
-      const itemModal = document.getElementById('itemModal');
-      if (addBtn && itemModal) {
-        addBtn.addEventListener('click', (e) => {
-          e.preventDefault(); e.stopPropagation();
-          itemModal.classList.remove('hidden');
-          const form = document.getElementById('itemForm');
-          if (form) form.reset();
-        });
-      }
-
-      // 3. Global Click Interceptor for Edit, Negative Stock Block, and Close Buttons
+      // 3. Global Click Interceptor for Edit, Delete, Close, and Negative Stock Checkouts
       document.addEventListener('click', function(e) {
         const btn = e.target.closest('button');
         if (!btn) return;
