@@ -179,6 +179,7 @@
             <div class="table-responsive">
               <table class="industrial-table" id="ledgerTable">
                 <thead><tr><th>Transaction ID</th><th>Timestamp</th><th>Staff</th><th>Material Taken</th><th class="text-right">Qty</th><th class="text-center">Sync Status</th></tr></thead>
+                <!-- ID MATCHES JS -->
                 <tbody id="ledgerTableBody"></tbody>
               </table>
             </div>
@@ -238,7 +239,7 @@
   </div>
 
   <!-- =========================================================================
-       ALL MODALS RESTORED (UPLOAD INVENTORY, EMPLOYEES, EXPORT, ADD, EDIT)
+       ALL MODALS RESTORED WITH APPEND/REPLACE RADIO BUTTONS
        ========================================================================= -->
 
   <!-- Upload Inventory Modal -->
@@ -250,6 +251,12 @@
           <div class="csv-dropzone" id="inventoryDropzone"><input type="file" id="inventoryCsvFileInput" class="csv-file-input" accept=".csv"></div>
           <div class="form-group"><label for="inventoryCsvTextarea">Paste CSV Text Directly:</label><textarea id="inventoryCsvTextarea" class="form-textarea" rows="4"></textarea></div>
           <div id="inventoryCsvPreviewContainer" class="csv-preview-container hidden"><div class="csv-preview-table-wrap"><table class="csv-preview-table"><tbody id="inventoryPreviewTableBody"></tbody></table></div></div>
+          
+          <!-- RADIO BUTTONS RESTORED -->
+          <div class="import-mode-options" style="margin-top:15px;">
+            <label style="margin-right: 20px;"><input type="radio" name="inventoryImportMode" value="append" checked> Append to existing inventory</label>
+            <label><input type="radio" name="inventoryImportMode" value="replace"> Replace entire inventory</label>
+          </div>
         </div>
       </div>
       <div class="modal-footer"><button type="button" class="btn btn-secondary" data-close-modal="uploadInventoryModal">Cancel</button><button type="button" class="btn btn-warning" id="saveUploadedInventoryBtn">Save to Database</button></div>
@@ -265,6 +272,12 @@
           <div class="csv-dropzone" id="employeesDropzone"><input type="file" id="employeesCsvFileInput" class="csv-file-input" accept=".csv"></div>
           <div class="form-group"><label for="employeesCsvTextarea">Paste CSV Text Directly:</label><textarea id="employeesCsvTextarea" class="form-textarea" rows="4"></textarea></div>
           <div id="employeesCsvPreviewContainer" class="csv-preview-container hidden"><div class="csv-preview-table-wrap"><table class="csv-preview-table"><tbody id="employeesPreviewTableBody"></tbody></table></div></div>
+          
+          <!-- RADIO BUTTONS RESTORED -->
+          <div class="import-mode-options" style="margin-top:15px;">
+            <label style="margin-right: 20px;"><input type="radio" name="employeesImportMode" value="append" checked> Append to existing roster</label>
+            <label><input type="radio" name="employeesImportMode" value="replace"> Replace entire roster</label>
+          </div>
         </div>
       </div>
       <div class="modal-footer"><button type="button" class="btn btn-secondary" data-close-modal="uploadEmployeesModal">Cancel</button><button type="button" class="btn btn-primary" id="saveUploadedEmployeesBtn">Save to Database</button></div>
@@ -366,7 +379,6 @@
     </div>
   </div>
 
-  <!-- Mobile Checkout & Return (Blank fallbacks to prevent crash) -->
   <div id="mobileCheckoutModal" class="modal-backdrop hidden"></div>
   <div id="mobileReturnModal" class="modal-backdrop hidden"></div>
   <div id="gatekeeperPassModal" class="hidden"></div>
