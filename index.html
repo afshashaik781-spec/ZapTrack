@@ -4,105 +4,60 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Zap Track - JSW Electrical</title>
-  <meta name="description" content="Zap Track - JSW Steel Electrical Engineering Department Digital Inventory Management System">
   
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#ffffff">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/icon-192x192.png">
 
-  <!-- Google Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="css/styles.css">
 
-  <!-- =========================================================================
-       MASTER UI POLISH & E-COMMERCE STANDARD CLEANUP
-       ========================================================================= -->
   <style>
     body { font-family: 'Inter', sans-serif !important; -webkit-font-smoothing: antialiased; }
     
-    /* REMOVE REDUNDANT HEADERS & CLUNKY BOXES GLOBALLY */
     .global-view-switcher { display: none !important; }
     .admin-profile { display: none !important; }
 
-    /* DESKTOP HEADER POLISH */
+    /* DESKTOP HEADER ALIGNMENT FIXED */
     .app-header {
       padding: 15px 30px !important;
       background: #ffffff !important;
       box-shadow: 0 2px 15px rgba(0,0,0,0.06) !important;
       border-bottom: 1px solid #e5e7eb !important;
+      display: flex !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+      flex-wrap: wrap !important;
     }
+    .header-left { display: flex !important; align-items: center !important; }
+    .header-right { display: flex !important; align-items: center !important; gap: 10px !important; margin-top: 0 !important; flex-wrap: wrap !important; }
+    
+    /* FIX FOR EDIT BUTTON NOT CLICKING IN JS */
+    .industrial-table button i, .industrial-table button span { pointer-events: none !important; }
     
     @media (max-width: 768px) {
-      /* PREMIUM CENTERED LOGIN SCREEN */
+      .app-header { flex-direction: column !important; align-items: flex-start !important; }
+      .header-right { margin-top: 15px !important; width: 100% !important; justify-content: flex-start !important; }
+      
       #landingGatewayView { background-color: #f1f3f6 !important; }
-      .gateway-login-wrapper {
-        padding: 0 !important;
-        height: 100vh !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        background: transparent !important;
-      }
-      .gateway-login-card {
-        width: 92% !important;
-        max-width: 400px !important;
-        margin: 0 auto !important;
-        border-radius: 16px !important;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.08) !important;
-        border: none !important;
-        padding: 35px 24px !important;
-        background: #ffffff !important;
-      }
+      .gateway-login-wrapper { padding: 0 !important; height: 100vh !important; display: flex !important; align-items: center !important; justify-content: center !important; background: transparent !important; }
+      .gateway-login-card { width: 92% !important; max-width: 400px !important; margin: 0 auto !important; border-radius: 16px !important; box-shadow: 0 8px 24px rgba(0,0,0,0.08) !important; border: none !important; padding: 35px 24px !important; background: #ffffff !important; }
       .gateway-logo-img { height: 40px !important; margin-bottom: 10px !important; }
       .gateway-app-title { font-size: 22px !important; font-weight: 800 !important; color: #111 !important; }
       .gateway-subtitle { color: #666 !important; margin-bottom: 25px !important; }
       
-      /* INPUTS & BUTTONS POLISH */
-      .form-input {
-        border-radius: 10px !important;
-        border: 1px solid #d1d5db !important;
-        padding: 14px 14px 14px 45px !important;
-        font-size: 15px !important;
-        background: #f9fafb !important;
-      }
+      .form-input { border-radius: 10px !important; border: 1px solid #d1d5db !important; padding: 14px 14px 14px 45px !important; font-size: 15px !important; background: #f9fafb !important; }
       .form-input:focus { background: #fff !important; border-color: #005587 !important; box-shadow: 0 0 0 4px rgba(0,85,135,0.1) !important; }
       .input-with-icon i { left: 16px !important; color: #6b7280 !important; }
       
-      .gateway-submit-btn, .mobile-login-btn {
-        border-radius: 10px !important;
-        font-weight: 600 !important;
-        letter-spacing: 0.3px !important;
-        height: 50px !important;
-        background: #005587 !important;
-        color: white !important;
-        border: none !important;
-        box-shadow: 0 4px 12px rgba(0,85,135,0.2) !important;
-        transition: all 0.2s ease !important;
-      }
+      .gateway-submit-btn, .mobile-login-btn { border-radius: 10px !important; font-weight: 600 !important; letter-spacing: 0.3px !important; height: 50px !important; background: #005587 !important; color: white !important; border: none !important; box-shadow: 0 4px 12px rgba(0,85,135,0.2) !important; }
       
-      /* CLEAN MOBILE DASHBOARD */
-      .app-header, .mobile-app-header {
-        background: #ffffff !important;
-        padding: 12px 16px !important;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05) !important;
-        position: sticky !important;
-        top: 0 !important;
-        z-index: 1000 !important;
-      }
+      .mobile-app-header { background: #ffffff !important; padding: 12px 16px !important; box-shadow: 0 2px 10px rgba(0,0,0,0.05) !important; position: sticky !important; top: 0 !important; z-index: 1000 !important; }
       .stats-grid { padding: 16px !important; background: #f1f3f6 !important; }
-      .stat-card, .section-card, .catalog-card {
-        border-radius: 14px !important;
-        border: none !important;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.04) !important;
-        background: #fff !important;
-      }
+      .stat-card, .section-card, .catalog-card { border-radius: 14px !important; border: none !important; box-shadow: 0 2px 8px rgba(0,0,0,0.04) !important; background: #fff !important; }
       .mobile-notch, #toggleDeviceFrameBtn { display: none !important; }
       .mobile-device-shell { border: none !important; border-radius: 0 !important; max-width: 100% !important; height: 100vh !important; }
       .mobile-outer-wrapper { padding: 0 !important; }
@@ -111,97 +66,62 @@
 </head>
 <body class="enterprise-theme">
 
-  <!-- =========================================================================
-       HIDDEN ELEMENTS REQUIRED BY JAVASCRIPT ENGINE (DO NOT DELETE)
-       ========================================================================= -->
+  <!-- HIDDEN ELEMENTS FOR JS -->
   <div class="global-view-switcher" id="globalTopBar">
-    <div class="active-session-pill hidden" id="activeSessionPill">
-      <span id="sessionRoleIcon"></span><span id="sessionRoleLabel"></span>
-      <button id="globalLogoutBtn"></button>
-    </div>
+    <div class="active-session-pill hidden" id="activeSessionPill"><span id="sessionRoleIcon"></span><span id="sessionRoleLabel"></span><button id="globalLogoutBtn"></button></div>
     <button id="globalNetworkToggleBtn"><span id="globalNetStatusText"></span></button>
     <div id="globalPendingQueueBadge"><span id="globalPendingQueueCount"></span></div>
     <button id="globalInstallAppHeaderBtn"></button><button id="toggleDeviceFrameBtn"></button>
   </div>
-
   <div id="pwaInstallBanner" class="hidden"><button id="pwaInstallActionBtn"></button><button id="pwaIosGuideBtn"></button><button id="pwaDismissBtn"></button></div>
   <div id="pwaIosModal" class="hidden"><button data-close-modal="pwaIosModal"></button></div>
 
-  <!-- =========================================================================
-       VIEW 0: UNIFIED LOGIN GATEWAY
-       ========================================================================= -->
+  <!-- VIEW 0: LOGIN GATEWAY -->
   <div id="landingGatewayView" class="view-wrapper active">
     <div class="gateway-login-wrapper">
       <div class="gateway-login-card">
         <div class="gateway-header">
-          <div class="gateway-logo-wrap">
-            <img src="assets/images/jsw-logo.png" alt="JSW Steel Logo" class="gateway-logo-img">
-          </div>
+          <div class="gateway-logo-wrap"><img src="assets/images/jsw-logo.png" alt="JSW Steel Logo" class="gateway-logo-img"></div>
           <h1 class="gateway-app-title">Zap Track</h1>
           <p class="gateway-subtitle">Sign in to access the portal</p>
         </div>
-
         <div class="role-segmented-control" role="tablist">
-          <button type="button" class="role-segment-btn active" id="segmentEmployeeBtn" role="tab" aria-selected="true" data-role="employee">
-            <i class="fa-solid fa-user"></i> <span>Employee</span>
-          </button>
-          <button type="button" class="role-segment-btn" id="segmentAdminBtn" role="tab" aria-selected="false" data-role="admin">
-            <i class="fa-solid fa-user-shield"></i> <span>Administrator</span>
-          </button>
+          <button type="button" class="role-segment-btn active" id="segmentEmployeeBtn" role="tab" aria-selected="true" data-role="employee"><i class="fa-solid fa-user"></i> <span>Employee</span></button>
+          <button type="button" class="role-segment-btn" id="segmentAdminBtn" role="tab" aria-selected="false" data-role="admin"><i class="fa-solid fa-user-shield"></i> <span>Administrator</span></button>
         </div>
-
         <form id="gatewayLoginForm" class="gateway-form" style="display: flex; flex-direction: column; gap: 16px;">
-          <div class="form-group" style="margin-bottom: 0;">
-            <label for="gatewayInputName">Name <span class="required-star">*</span></label>
-            <div class="input-with-icon">
-              <i class="fa-solid fa-user"></i>
-              <input type="text" id="gatewayInputName" class="form-input" required autocomplete="name">
-            </div>
-          </div>
-          <div class="form-group" style="margin-bottom: 0;">
-            <label for="gatewayInputEmpId">Employee ID <span class="required-star">*</span></label>
-            <div class="input-with-icon">
-              <i class="fa-solid fa-id-badge"></i>
-              <input type="text" id="gatewayInputEmpId" class="form-input" required autocomplete="username">
-            </div>
-          </div>
+          <div class="form-group" style="margin-bottom: 0;"><label for="gatewayInputName">Name <span class="required-star">*</span></label><div class="input-with-icon"><i class="fa-solid fa-user"></i><input type="text" id="gatewayInputName" class="form-input" required autocomplete="name"></div></div>
+          <div class="form-group" style="margin-bottom: 0;"><label for="gatewayInputEmpId">Employee ID <span class="required-star">*</span></label><div class="input-with-icon"><i class="fa-solid fa-id-badge"></i><input type="text" id="gatewayInputEmpId" class="form-input" required autocomplete="username"></div></div>
           <div style="height: 8px; width: 100%; display: block;" aria-hidden="true"></div>
-          <button type="submit" class="btn btn-block gateway-submit-btn" id="gatewaySubmitBtn">
-            <i class="fa-solid fa-right-to-bracket" id="gatewaySubmitBtnIcon"></i>
-            <span id="gatewaySubmitBtnText">Log In</span>
-          </button>
-          <div id="gatewayErrorMessage" class="login-error-alert hidden" style="margin-top: 6px;">
-            <i class="fa-solid fa-circle-exclamation"></i>
-            <span id="gatewayErrorText">Authorization failed. Credentials not found.</span>
-          </div>
+          <button type="submit" class="btn btn-block gateway-submit-btn" id="gatewaySubmitBtn"><i class="fa-solid fa-right-to-bracket" id="gatewaySubmitBtnIcon"></i><span id="gatewaySubmitBtnText">Log In</span></button>
+          <div id="gatewayErrorMessage" class="login-error-alert hidden" style="margin-top: 6px;"><i class="fa-solid fa-circle-exclamation"></i><span id="gatewayErrorText">Authorization failed.</span></div>
         </form>
       </div>
     </div>
   </div>
 
-  <!-- =========================================================================
-       VIEW 1: ADMINISTRATOR DASHBOARD (CLEAN UI)
-       ========================================================================= -->
+  <!-- VIEW 1: ADMIN DASHBOARD -->
   <div id="adminViewContainer" class="view-wrapper">
     <div class="app-container">
       
-      <!-- Polished Admin Header -->
+      <!-- FIXED HEADER: Perfect Alignment & Icon -->
       <header class="app-header">
-        <div class="header-left" style="width: 100%; display: flex; flex-direction: row !important; justify-content: space-between !important; align-items: center !important;">
+        <div class="header-left">
           <div class="brand-badge">
             <div class="brand-logo-card"><img src="assets/images/jsw-logo.png" alt="JSW Steel" class="header-jsw-logo"></div>
             <div class="brand-info"><div class="brand-company">ZAP TRACK</div><div class="brand-sub">JSW Steel &bull; Electrical Dept.</div></div>
           </div>
-          <!-- Professional Top-Right Logout Icon -->
-          <button id="adminLogoutBtn" style="background: #fee2e2; border: 1px solid #fecaca; color: #991b1b; width: 40px; height: 40px; border-radius: 50%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 6px rgba(153,27,27,0.15);" title="Log Out">
-            <i class="fa-solid fa-power-off"></i>
-          </button>
         </div>
-        <div class="header-right" style="margin-top: 15px;">
+        <div class="header-right">
           <button id="adminHeaderUploadInventoryBtn" class="btn btn-warning"><i class="fa-solid fa-file-arrow-up"></i><span>Upload Inventory</span></button>
           <button id="adminHeaderUploadEmployeesBtn" class="btn btn-secondary"><i class="fa-solid fa-users-viewfinder"></i><span>Upload Employees</span></button>
           <button id="adminHeaderSelfCheckoutBtn" class="btn btn-cyan self-checkout-btn"><i class="fa-solid fa-cart-arrow-down"></i><span>Take Material</span></button>
           <button id="quickExportBtn" class="btn btn-secondary"><i class="fa-solid fa-file-excel"></i><span>Export Ledger</span></button>
+          
+          <!-- NEW LOG OUT BUTTON -->
+          <button id="adminLogoutBtn" class="btn" style="background: #fee2e2; border: 1px solid #fecaca; color: #991b1b; padding: 8px 16px; border-radius: 8px; font-weight: 600; display: flex; align-items: center; gap: 8px; margin-left: 10px;" title="Sign Out">
+            <i class="fa-solid fa-right-from-bracket"></i> <span>Sign Out</span>
+          </button>
         </div>
       </header>
 
@@ -214,7 +134,6 @@
         <div class="header-clock"><i class="fa-regular fa-clock"></i> <span id="clockDisplay">--:--:--</span></div>
       </nav>
 
-      <!-- Alert Banner -->
       <div id="negativeStockBanner" class="alert-banner negative-stock-banner hidden">
         <div class="alert-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
         <div class="alert-content"><h4>Critical Stock Warning</h4><p id="negativeStockMessage">Items have dropped below zero.</p></div>
@@ -229,7 +148,6 @@
       </section>
 
       <main class="dashboard-main">
-        <!-- TAB 1: INVENTORY -->
         <section id="inventoryTab" class="tab-content active">
           <div class="section-card">
             <div class="card-header-bar">
@@ -260,7 +178,6 @@
           </div>
         </section>
 
-        <!-- TAB 2: LEDGER -->
         <section id="ledgerTab" class="tab-content">
           <div class="section-card">
             <div class="card-header-bar">
@@ -292,7 +209,6 @@
           </div>
         </section>
 
-        <!-- TAB 3: EMPLOYEES -->
         <section id="employeesTab" class="tab-content">
           <div class="section-card">
             <div class="card-header-bar">
@@ -322,43 +238,16 @@
     </div>
   </div>
 
-  <!-- =========================================================================
-       VIEW 2: EMPLOYEE MOBILE EXPERIENCE (AMAZON/FLIPKART STYLE)
-       ========================================================================= -->
+  <!-- VIEW 2: EMPLOYEE MOBILE EXPERIENCE -->
   <div id="mobileViewContainer" class="view-wrapper">
     <div class="mobile-outer-wrapper">
       <div class="mobile-device-shell" id="mobileDeviceShell">
-        <div class="mobile-notch"></div>
-
-        <!-- Mobile Login (Fallback inside mobile view if needed) -->
-        <div id="mobileLoginScreen" class="mobile-subview active">
-          <div class="mobile-login-container">
-            <div class="login-brand-header"><div class="mobile-login-logo-card"><img src="assets/images/jsw-logo.png" alt="JSW" class="mobile-login-logo-img"></div><h2 class="login-dept-title">Zap Track</h2></div>
-            <div class="login-card">
-              <div class="login-card-title"><h3>Employee Sign In</h3></div>
-              <form id="mobileLoginForm" style="display: flex; flex-direction: column; gap: 16px;">
-                <div class="form-group" style="margin-bottom: 0;">
-                  <label for="loginInputName">Name <span class="required-star">*</span></label>
-                  <div class="input-with-icon"><i class="fa-solid fa-user"></i><input type="text" id="loginInputName" class="form-input" required></div>
-                </div>
-                <div class="form-group" style="margin-bottom: 0;">
-                  <label for="loginInputEmpId">Employee ID <span class="required-star">*</span></label>
-                  <div class="input-with-icon"><i class="fa-solid fa-id-badge"></i><input type="text" id="loginInputEmpId" class="form-input" required></div>
-                </div>
-                <div style="height: 24px; width: 100%; display: block;" aria-hidden="true"></div>
-                <button type="submit" class="btn btn-warning btn-block mobile-login-btn" id="loginSubmitBtn"><i class="fa-solid fa-right-to-bracket"></i><span>Log In</span></button>
-                <div id="loginErrorMessage" class="login-error-alert hidden"><i class="fa-solid fa-circle-exclamation"></i><span id="loginErrorText">Error</span></div>
-              </form>
-            </div>
-          </div>
-        </div>
-
-        <!-- Mobile Catalog -->
-        <div id="mobileCatalogScreen" class="mobile-subview hidden">
+        <div id="mobileCatalogScreen" class="mobile-subview active">
+          
           <header class="mobile-app-header">
             <div class="mobile-header-user">
               <div class="mobile-nav-logo-card"><img src="assets/images/jsw-logo.png" alt="JSW" class="mobile-nav-logo-img"></div>
-              <div class="mobile-user-info"><span class="mobile-user-name" id="mobileUserName">Employee</span><span class="mobile-user-empid" id="mobileUserEmpId">EMP</span></div>
+              <div class="mobile-user-info"><span class="mobile-user-name" id="mobileUserName">Employee</span><span class="mobile-user-empid" id="mobileUserEmpId">EMP-000</span></div>
             </div>
             <div class="mobile-header-actions">
               <button id="mobileNetworkStatusBtn" class="network-badge online"><span class="pulse-dot-sm"></span><span class="net-text" id="mobileNetBadgeText">Online</span></button>
@@ -366,168 +255,35 @@
             </div>
           </header>
 
-          <div id="mobileOfflineNotice" class="mobile-offline-banner hidden">
-            <div class="offline-banner-left"><i class="fa-solid fa-triangle-exclamation"></i><span id="mobileOfflineNoticeText">Dead Zone Mode.</span></div>
-            <button id="mobileSyncNowBtn" class="btn btn-xs btn-outline-warning hidden"><i class="fa-solid fa-rotate"></i> Sync</button>
-          </div>
-
           <div class="mobile-catalog-toolbar">
-            <div class="catalog-heading-wrap"><h2>Consumables</h2><span class="catalog-item-count" id="mobileCatalogCountText">0 items</span></div>
-            <div class="mobile-search-bar"><i class="fa-solid fa-magnifying-glass"></i><input type="text" id="mobileSearchInput" placeholder="Search..."><button class="clear-search-btn hidden" id="clearMobileSearch"><i class="fa-solid fa-xmark"></i></button></div>
+            <div class="catalog-heading-wrap"><h2>Electrical Consumables</h2></div>
+            <div class="mobile-search-bar"><i class="fa-solid fa-magnifying-glass"></i><input type="text" id="mobileSearchInput" placeholder="Search consumables..."><button class="clear-search-btn hidden" id="clearMobileSearch"><i class="fa-solid fa-xmark"></i></button></div>
             <div class="mobile-filter-chips">
               <button class="m-chip active" data-mfilter="all">All Items</button>
               <button class="m-chip" data-mfilter="instock">In Stock</button>
               <button class="m-chip" data-mfilter="low">Low Stock</button>
             </div>
           </div>
-
           <div class="mobile-catalog-list" id="mobileCatalogList"></div>
-          <div class="mobile-bottom-bar"><div class="bottom-bar-info"><i class="fa-solid fa-circle-info"></i><span id="mobileBottomBarText">Tap to checkout</span></div></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- =========================================================================
-       CRITICAL POPUP MODALS (THESE ARE REQUIRED FOR BUTTONS TO WORK)
-       ========================================================================= -->
+  <!-- MODALS SECTION -->
+  <div id="adminAuthModal" class="modal-backdrop hidden"></div>
+  <div id="adminSelfCheckoutModal" class="modal-backdrop hidden"></div>
+  <div id="adminReturnModal" class="modal-backdrop hidden"></div>
+  <div id="mobileCheckoutModal" class="modal-backdrop mobile-bottomsheet-backdrop hidden"></div>
+  <div id="mobileReturnModal" class="modal-backdrop mobile-bottomsheet-backdrop hidden"></div>
+  <div id="gatekeeperPassModal" class="gatekeeper-fullscreen-overlay hidden"></div>
+  <div id="exportModal" class="modal-backdrop hidden"></div>
+  <div id="employeeModal" class="modal-backdrop hidden"></div>
+  <div id="simulateModal" class="modal-backdrop hidden"></div>
+  <div id="uploadInventoryModal" class="modal-backdrop hidden"></div>
+  <div id="uploadEmployeesModal" class="modal-backdrop hidden"></div>
 
-  <!-- 1. Admin Auth Modal -->
-  <div id="adminAuthModal" class="modal-backdrop hidden">
-    <div class="modal-dialog">
-      <div class="modal-header">
-        <div class="modal-title-wrap"><i class="fa-solid fa-user-shield modal-title-icon"></i><h3>Administrator Authentication</h3></div>
-        <button class="modal-close-btn" data-close-modal="adminAuthModal"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <form id="adminAuthForm">
-        <div class="modal-body">
-          <div class="form-group"><label for="adminUsernameInput">Name</label><div class="input-with-icon"><i class="fa-solid fa-user"></i><input type="text" id="adminUsernameInput" class="form-input" required></div></div>
-          <div class="form-group"><label for="adminPasswordInput">Employee ID</label><div class="input-with-icon"><i class="fa-solid fa-id-badge"></i><input type="password" id="adminPasswordInput" class="form-input" required></div></div>
-          <div id="adminAuthErrorMessage" class="login-error-alert hidden"><i class="fa-solid fa-circle-exclamation"></i><span id="adminAuthErrorText">Denied</span></div>
-        </div>
-        <div class="modal-footer"><button type="button" class="btn btn-secondary" data-close-modal="adminAuthModal">Cancel</button><button type="submit" class="btn btn-primary" id="adminAuthSubmitBtn">Log In</button></div>
-      </form>
-    </div>
-  </div>
-
-  <!-- 2. Admin Self-Checkout Modal -->
-  <div id="adminSelfCheckoutModal" class="modal-backdrop hidden">
-    <div class="modal-dialog">
-      <div class="modal-header">
-        <div class="modal-title-wrap"><i class="fa-solid fa-cart-arrow-down modal-title-icon"></i><h3>Admin Checkout</h3></div>
-        <button class="modal-close-btn" data-close-modal="adminSelfCheckoutModal"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <form id="adminSelfCheckoutForm">
-        <div class="modal-body">
-          <div class="form-group"><label for="adminSelfItemSelect">Item</label><select id="adminSelfItemSelect" class="form-select" required></select></div>
-          <div class="form-row-2col">
-            <div class="form-group"><label>Stock</label><div class="static-badge-display" id="adminSelfCurrentStockBadge">0 units</div></div>
-            <div class="form-group"><label for="adminSelfQuantity">Qty</label><input type="number" id="adminSelfQuantity" class="form-input" min="1" value="1" required></div>
-          </div>
-          <div class="form-group"><label for="adminSelfPurpose">Purpose</label><input type="text" id="adminSelfPurpose" class="form-input"></div>
-          <div class="checkout-summary-box"><div class="summary-line"><span>Remaining:</span><strong id="adminSelfRemainingPreview">0 units</strong></div></div>
-        </div>
-        <div class="modal-footer"><button type="button" class="btn btn-secondary" data-close-modal="adminSelfCheckoutModal">Cancel</button><button type="submit" class="btn btn-warning" id="confirmAdminSelfCheckoutBtn">Checkout</button></div>
-      </form>
-    </div>
-  </div>
-
-  <!-- 3. Admin Return Modal -->
-  <div id="adminReturnModal" class="modal-backdrop hidden">
-    <div class="modal-dialog">
-      <div class="modal-header">
-        <div class="modal-title-wrap"><i class="fa-solid fa-arrow-rotate-left modal-title-icon"></i><h3>Process Return</h3></div>
-        <button class="modal-close-btn" data-close-modal="adminReturnModal"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <form id="adminReturnForm">
-        <div class="modal-body">
-          <div class="form-group"><label for="adminReturnItemSelect">Item</label><select id="adminReturnItemSelect" class="form-select" required></select></div>
-          <div class="form-row-2col">
-            <div class="form-group"><label>Stock</label><div class="static-badge-display" id="adminReturnCurrentStockBadge">0</div></div>
-            <div class="form-group"><label for="adminReturnQuantity">Qty</label><input type="number" id="adminReturnQuantity" class="form-input" min="1" value="1" required></div>
-          </div>
-          <div class="form-group"><label for="adminReturnEmployeeInput">Returned By</label><input type="text" id="adminReturnEmployeeInput" class="form-input"></div>
-          <div class="checkout-summary-box"><div class="summary-line"><span>Updated Stock:</span><strong id="adminReturnNewStockPreview">0</strong></div></div>
-        </div>
-        <div class="modal-footer"><button type="button" class="btn btn-secondary" data-close-modal="adminReturnModal">Cancel</button><button type="submit" class="btn btn-primary" id="confirmAdminReturnBtn">Return</button></div>
-      </form>
-    </div>
-  </div>
-
-  <!-- 4. Mobile Checkout Modal -->
-  <div id="mobileCheckoutModal" class="modal-backdrop mobile-bottomsheet-backdrop hidden">
-    <div class="mobile-bottomsheet-dialog">
-      <div class="bottomsheet-handle"></div>
-      <div class="bottomsheet-header">
-        <div class="bottomsheet-title-wrap"><span class="item-id-pill" id="checkoutModalItemId">ID</span><h3 id="checkoutModalItemName">Item</h3></div>
-        <button class="modal-close-btn" data-close-modal="mobileCheckoutModal"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <div class="bottomsheet-body">
-        <div class="checkout-stock-indicator"><span class="stock-ind-label">Stock:</span><span class="stock-ind-value" id="checkoutModalStock">0</span></div>
-        <div class="checkout-quantity-section">
-          <label class="qty-section-label">Quantity Required</label>
-          <div class="qty-stepper-control">
-            <button type="button" class="stepper-btn minus" id="qtyMinusBtn"><i class="fa-solid fa-minus"></i></button>
-            <input type="number" id="checkoutQtyInput" class="stepper-input" min="1" value="1">
-            <button type="button" class="stepper-btn plus" id="qtyPlusBtn"><i class="fa-solid fa-plus"></i></button>
-          </div>
-        </div>
-        <div class="checkout-summary-box">
-          <div class="summary-line"><span>By:</span><strong id="checkoutSummaryEmployee">Name</strong></div>
-          <div class="summary-line"><span>Remaining:</span><strong id="checkoutRemainingPreview">0</strong></div>
-          <div class="summary-line" id="checkoutNetworkModeLine"><span>Mode:</span><span class="badge-network-state" id="checkoutNetworkStateBadge">Online</span></div>
-        </div>
-      </div>
-      <div class="bottomsheet-footer"><button type="button" class="btn btn-warning btn-block confirm-checkout-btn" id="confirmMobileCheckoutBtn">Confirm Checkout</button></div>
-    </div>
-  </div>
-
-  <!-- 5. Mobile Return Modal -->
-  <div id="mobileReturnModal" class="modal-backdrop mobile-bottomsheet-backdrop hidden">
-    <div class="mobile-bottomsheet-dialog">
-      <div class="bottomsheet-handle"></div>
-      <div class="bottomsheet-header">
-        <div class="bottomsheet-title-wrap"><span class="item-id-pill" id="returnModalItemId">ID</span><h3 id="returnModalItemName">Item</h3></div>
-        <button class="modal-close-btn" data-close-modal="mobileReturnModal"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <div class="bottomsheet-body">
-        <div class="checkout-stock-indicator"><span class="stock-ind-label">Stock:</span><span class="stock-ind-value" id="returnModalStock">0</span></div>
-        <div class="checkout-quantity-section">
-          <label class="qty-section-label">Qty to Return</label>
-          <div class="qty-stepper-control">
-            <button type="button" class="stepper-btn minus" id="returnQtyMinusBtn"><i class="fa-solid fa-minus"></i></button>
-            <input type="number" id="returnQtyInput" class="stepper-input" min="1" value="1">
-            <button type="button" class="stepper-btn plus" id="returnQtyPlusBtn"><i class="fa-solid fa-plus"></i></button>
-          </div>
-        </div>
-        <div class="checkout-summary-box">
-          <div class="summary-line"><span>By:</span><strong id="returnSummaryEmployee">Name</strong></div>
-          <div class="summary-line"><span>New Stock:</span><strong id="returnNewStockPreview">0</strong></div>
-        </div>
-      </div>
-      <div class="bottomsheet-footer"><button type="button" class="btn btn-outline-cyan btn-block confirm-return-btn" id="confirmMobileReturnBtn">Confirm Return</button></div>
-    </div>
-  </div>
-
-  <!-- 6. Gatekeeper Pass -->
-  <div id="gatekeeperPassModal" class="gatekeeper-fullscreen-overlay hidden">
-    <div class="gatekeeper-pass-container">
-      <div class="pass-security-header"><div class="pass-security-badge">ZAP TRACK &bull; SECURITY PASS</div></div>
-      <div class="pass-verified-hero"><div class="checkmark-pulse-wrapper"><div class="checkmark-circle"><i class="fa-solid fa-check"></i></div></div><h1 class="pass-title">VERIFIED</h1></div>
-      <div class="pass-time-card">
-        <div class="live-clock-banner"><span class="live-clock-label">CLOCK:</span><span class="live-clock-digits" id="passLiveClock"></span></div>
-        <div class="pass-exact-timestamp"><strong id="passExactTimestamp"></strong></div>
-      </div>
-      <div class="pass-details-card">
-        <div class="pass-detail-row highlight-emp"><div class="detail-label">EMPLOYEE</div><div class="detail-value-emp"><div class="emp-name-large" id="passEmployeeName"></div><div class="emp-id-badge" id="passEmployeeId"></div></div></div>
-        <div class="pass-detail-row highlight-material"><div class="detail-label">MATERIAL</div><div class="detail-value-material"><div class="material-name-large" id="passItemName"></div><div class="material-qty-badge"><span class="qty-number" id="passQuantityTaken"></span></div></div></div>
-        <div class="pass-detail-row txn-row"><div class="detail-label">TXN</div><div class="pass-audit-wrap"><div class="txn-code" id="passTransactionId"></div><div id="passSyncStatusBadge" class="pass-sync-tag online">Verified</div></div></div>
-      </div>
-      <div class="pass-actions"><button type="button" class="btn btn-block pass-done-btn" id="gatekeeperDoneBtn">Done / New Checkout</button></div>
-    </div>
-  </div>
-
-  <!-- 7. Add/Edit Item Modal -->
+  <!-- MAIN ADD/EDIT ITEM MODAL -->
   <div id="itemModal" class="modal-backdrop hidden">
     <div class="modal-dialog">
       <div class="modal-header"><div class="modal-title-wrap"><h3>Inventory Item</h3></div><button class="modal-close-btn" data-close-modal="itemModal"><i class="fa-solid fa-xmark"></i></button></div>
@@ -543,134 +299,43 @@
     </div>
   </div>
 
-  <!-- 8. Export Modal -->
-  <div id="exportModal" class="modal-backdrop hidden">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-header"><div class="modal-title-wrap"><h3>Export Ledger</h3></div><button class="modal-close-btn" data-close-modal="exportModal"><i class="fa-solid fa-xmark"></i></button></div>
-      <div class="modal-body">
-        <div class="export-filter-card">
-          <div class="export-range-options">
-            <label class="radio-option"><input type="radio" name="exportDateOption" value="this-month" checked><div class="radio-body"><span class="radio-title">Current Month (<span id="exportMonthName"></span>)</span></div></label>
-            <label class="radio-option"><input type="radio" name="exportDateOption" value="last-30"><div class="radio-body"><span class="radio-title">Last 30 Days</span></div></label>
-            <label class="radio-option"><input type="radio" name="exportDateOption" value="all"><div class="radio-body"><span class="radio-title">All Transactions</span></div></label>
-            <label class="radio-option"><input type="radio" name="exportDateOption" value="custom"><div class="radio-body"><span class="radio-title">Custom</span><div class="custom-range-inputs"><input type="date" id="exportDateFrom" class="form-control-date"><span>to</span><input type="date" id="exportDateTo" class="form-control-date"></div></div></label>
-          </div>
-        </div>
-        <div class="export-preview-box"><div class="preview-header"><span class="record-counter"><strong id="exportRecordCount">0</strong> transactions selected</span></div></div>
-      </div>
-      <div class="modal-footer"><button type="button" class="btn btn-secondary" data-close-modal="exportModal">Cancel</button><button type="button" class="btn btn-warning export-btn-action" id="triggerDownloadCsvBtn">Download CSV</button></div>
-    </div>
-  </div>
-
-  <!-- 9. Add Employee Modal -->
-  <div id="employeeModal" class="modal-backdrop hidden">
+  <!-- FALLBACK EDIT ITEM MODAL (IN CASE JS EXPECTS IT) -->
+  <div id="editItemModal" class="modal-backdrop hidden">
     <div class="modal-dialog">
-      <div class="modal-header"><div class="modal-title-wrap"><h3>Add Employee</h3></div><button class="modal-close-btn" data-close-modal="employeeModal"><i class="fa-solid fa-xmark"></i></button></div>
-      <form id="employeeForm">
+      <div class="modal-header"><div class="modal-title-wrap"><h3>Edit Item</h3></div><button class="modal-close-btn" data-close-modal="editItemModal"><i class="fa-solid fa-xmark"></i></button></div>
+      <form id="editItemForm">
         <div class="modal-body">
-          <div class="form-group"><label for="empInputId">ID</label><input type="text" id="empInputId" class="form-input" required></div>
-          <div class="form-group"><label for="empInputName">Name</label><input type="text" id="empInputName" class="form-input" required></div>
+          <div class="form-group"><label for="editItemInputId">Item ID</label><input type="text" id="editItemInputId" class="form-input" required readonly></div>
+          <div class="form-group"><label for="editItemInputName">Name</label><input type="text" id="editItemInputName" class="form-input" required></div>
+          <div class="form-group"><label for="editItemInputStock">Stock</label><input type="number" id="editItemInputStock" class="form-input" required></div>
+          <div class="form-group"><label for="editItemInputBinLocation">Bin Location</label><input type="text" id="editItemInputBinLocation" class="form-input"></div>
         </div>
-        <div class="modal-footer"><button type="button" class="btn btn-secondary" data-close-modal="employeeModal">Cancel</button><button type="submit" class="btn btn-primary" id="saveEmployeeBtn">Save</button></div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary" data-close-modal="editItemModal">Cancel</button><button type="submit" class="btn btn-primary" id="updateItemBtn">Update</button></div>
       </form>
-    </div>
-  </div>
-
-  <!-- 10. Simulate Modal -->
-  <div id="simulateModal" class="modal-backdrop hidden">
-    <div class="modal-dialog">
-      <div class="modal-header"><div class="modal-title-wrap"><h3>Simulate Checkout</h3></div><button class="modal-close-btn" data-close-modal="simulateModal"><i class="fa-solid fa-xmark"></i></button></div>
-      <form id="simulateForm">
-        <div class="modal-body">
-          <div class="form-group"><label for="simEmployeeSelect">Employee</label><select id="simEmployeeSelect" class="form-select" required></select></div>
-          <div class="form-group"><label for="simItemSelect">Item</label><select id="simItemSelect" class="form-select" required></select></div>
-          <div class="form-row-2col">
-            <div class="form-group"><label for="simQuantity">Qty</label><input type="number" id="simQuantity" class="form-input" min="1" value="1" required></div>
-            <div class="form-group"><label for="simSyncStatus">Network</label><select id="simSyncStatus" class="form-select"><option value="true">Online</option><option value="false">Offline</option></select></div>
-          </div>
-        </div>
-        <div class="modal-footer"><button type="button" class="btn btn-secondary" data-close-modal="simulateModal">Cancel</button><button type="submit" class="btn btn-primary">Simulate</button></div>
-      </form>
-    </div>
-  </div>
-
-  <!-- 11. Upload Inventory Modal -->
-  <div id="uploadInventoryModal" class="modal-backdrop hidden">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-header"><div class="modal-title-wrap"><h3>Upload Inventory (CSV)</h3></div><button class="modal-close-btn" data-close-modal="uploadInventoryModal"><i class="fa-solid fa-xmark"></i></button></div>
-      <div class="modal-body">
-        <div class="csv-upload-container">
-          <div class="csv-instructions-card"><div class="inst-title"><button type="button" id="downloadInventoryTemplateBtn" class="btn-download-template">Download Template</button></div></div>
-          <div class="csv-dropzone" id="inventoryDropzone"><input type="file" id="inventoryCsvFileInput" class="csv-file-input" accept=".csv"></div>
-          <div id="inventoryAttachedFileCard" class="attached-file-card hidden"><div class="attached-file-info"><div id="inventoryAttachedFileName"></div><div id="inventoryAttachedFileSize"></div></div><button type="button" id="removeInventoryFileBtn" class="btn-remove-file">X</button></div>
-          <div class="form-group"><label for="inventoryCsvTextarea">Paste CSV Text:</label><textarea id="inventoryCsvTextarea" class="form-textarea" rows="3"></textarea></div>
-          <div id="inventoryCsvPreviewContainer" class="csv-preview-container hidden"><div class="csv-preview-header"><span id="inventoryPreviewValidCount"></span><span id="inventoryPreviewInvalidCount" class="hidden"></span></div><div class="csv-preview-table-wrap"><table class="csv-preview-table"><tbody id="inventoryPreviewTableBody"></tbody></table></div></div>
-          <div class="import-mode-options"><label><input type="radio" name="inventoryImportMode" value="append" checked> Append</label><label><input type="radio" name="inventoryImportMode" value="replace"> Replace all</label></div>
-        </div>
-      </div>
-      <div class="modal-footer"><button type="button" class="btn btn-secondary" data-close-modal="uploadInventoryModal">Cancel</button><button type="button" class="btn btn-warning" id="saveUploadedInventoryBtn" disabled>Save to Database</button></div>
-    </div>
-  </div>
-
-  <!-- 12. Upload Employees Modal -->
-  <div id="uploadEmployeesModal" class="modal-backdrop hidden">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-header"><div class="modal-title-wrap"><h3>Upload Employees (CSV)</h3></div><button class="modal-close-btn" data-close-modal="uploadEmployeesModal"><i class="fa-solid fa-xmark"></i></button></div>
-      <div class="modal-body">
-        <div class="csv-upload-container">
-          <div class="csv-instructions-card"><div class="inst-title"><button type="button" id="downloadEmployeesTemplateBtn" class="btn-download-template">Download Template</button></div></div>
-          <div class="csv-dropzone" id="employeesDropzone"><input type="file" id="employeesCsvFileInput" class="csv-file-input" accept=".csv"></div>
-          <div id="employeesAttachedFileCard" class="attached-file-card hidden"><div class="attached-file-info"><div id="employeesAttachedFileName"></div><div id="employeesAttachedFileSize"></div></div><button type="button" id="removeEmployeesFileBtn" class="btn-remove-file">X</button></div>
-          <div class="form-group"><label for="employeesCsvTextarea">Paste CSV Text:</label><textarea id="employeesCsvTextarea" class="form-textarea" rows="3"></textarea></div>
-          <div id="employeesCsvPreviewContainer" class="csv-preview-container hidden"><div class="csv-preview-header"><span id="employeesPreviewValidCount"></span><span id="employeesPreviewInvalidCount" class="hidden"></span></div><div class="csv-preview-table-wrap"><table class="csv-preview-table"><tbody id="employeesPreviewTableBody"></tbody></table></div></div>
-          <div class="import-mode-options"><label><input type="radio" name="employeesImportMode" value="append" checked> Append</label><label><input type="radio" name="employeesImportMode" value="replace"> Replace all</label></div>
-        </div>
-      </div>
-      <div class="modal-footer"><button type="button" class="btn btn-secondary" data-close-modal="uploadEmployeesModal">Cancel</button><button type="button" class="btn btn-primary" id="saveUploadedEmployeesBtn" disabled>Save to Database</button></div>
     </div>
   </div>
 
   <div id="toastContainer" class="toast-container"></div>
-  
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="js/firebase-config.js"></script>
   
-  <!-- REAL-TIME HARDWARE NETWORK DETECTION LOGIC -->
   <script>
     window.addEventListener('DOMContentLoaded', () => {
       const updateNetStatus = () => {
         const isOnline = navigator.onLine; 
         const badges = document.querySelectorAll('.network-badge, .btn-network-toggle');
         const texts = document.querySelectorAll('.net-text, #globalNetStatusText, #mobileNetBadgeText');
-        
         badges.forEach(badge => {
-          if(isOnline) {
-            badge.classList.remove('offline');
-            badge.classList.add('online');
-            badge.style.backgroundColor = '#dcfce7';
-            badge.style.color = '#166534';
-            badge.style.border = '1px solid #bbf7d0';
-          } else {
-            badge.classList.remove('online');
-            badge.classList.add('offline');
-            badge.style.backgroundColor = '#fee2e2';
-            badge.style.color = '#991b1b';
-            badge.style.border = '1px solid #fecaca';
-          }
+          if(isOnline) { badge.classList.remove('offline'); badge.classList.add('online'); badge.style.backgroundColor = '#dcfce7'; badge.style.color = '#166534'; badge.style.border = '1px solid #bbf7d0'; } 
+          else { badge.classList.remove('online'); badge.classList.add('offline'); badge.style.backgroundColor = '#fee2e2'; badge.style.color = '#991b1b'; badge.style.border = '1px solid #fecaca'; }
         });
-        
-        texts.forEach(txt => {
-          if(txt) txt.innerHTML = isOnline ? 'Online' : 'Offline';
-        });
+        texts.forEach(txt => { if(txt) txt.innerHTML = isOnline ? 'Online' : 'Offline'; });
       };
-      
-      window.addEventListener('online', updateNetStatus);
-      window.addEventListener('offline', updateNetStatus);
+      window.addEventListener('online', updateNetStatus); window.addEventListener('offline', updateNetStatus);
       setTimeout(updateNetStatus, 500); 
     });
   </script>
-
   <script src="js/app.js"></script>
 </body>
 </html>
