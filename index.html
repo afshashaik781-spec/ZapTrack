@@ -145,6 +145,7 @@
             <div class="table-toolbar">
               <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass"></i><input type="text" id="inventorySearchInput" placeholder="Search...">
+                <button class="clear-search-btn hidden" id="clearInventorySearch"><i class="fa-solid fa-xmark"></i></button>
               </div>
               <div class="filter-pills">
                 <button class="filter-chip active" data-filter="all">All Items</button>
@@ -204,6 +205,11 @@
                 <button id="openAddEmployeeBtn" class="btn btn-primary"><i class="fa-solid fa-user-plus"></i><span>Add</span></button>
               </div>
             </div>
+            <div class="table-toolbar">
+              <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i><input type="text" id="employeeSearchInput" placeholder="Search...">
+              </div>
+            </div>
             <div class="table-responsive">
               <table class="industrial-table" id="employeesTable">
                 <thead><tr><th>Employee ID</th><th>Full Name</th><th class="text-right">Checkouts</th><th class="text-center">Authorization</th><th class="text-center">Actions</th></tr></thead>
@@ -230,9 +236,15 @@
               <button id="mobileLogoutBtn" class="mobile-header-icon-btn"><i class="fa-solid fa-right-from-bracket"></i></button>
             </div>
           </header>
+
           <div class="mobile-catalog-toolbar">
             <div class="catalog-heading-wrap"><h2>Electrical Consumables</h2></div>
             <div class="mobile-search-bar"><i class="fa-solid fa-magnifying-glass"></i><input type="text" id="mobileSearchInput" placeholder="Search consumables..."></div>
+            <div class="mobile-filter-chips">
+              <button class="m-chip active" data-mfilter="all">All Items</button>
+              <button class="m-chip" data-mfilter="instock">In Stock</button>
+              <button class="m-chip" data-mfilter="low">Low Stock</button>
+            </div>
           </div>
           <div class="mobile-catalog-list" id="mobileCatalogList"></div>
         </div>
@@ -382,7 +394,6 @@
 
   <script>
     window.addEventListener('load', function() {
-      // Binds all buttons to open Modals
       const buttonModalMap = [
         { btnId: 'openUploadInventoryBtn', modalId: 'uploadInventoryModal' },
         { btnId: 'adminHeaderUploadInventoryBtn', modalId: 'uploadInventoryModal' },
@@ -406,10 +417,12 @@
       const realLogout = document.getElementById('globalLogoutBtn');
       if (fakeLogout && realLogout) { fakeLogout.addEventListener('click', (e) => { e.preventDefault(); realLogout.click(); }); }
 
+      // CLICK INTERCEPTOR FOR EVERYTHING (ADMIN + EMPLOYEE)
       document.addEventListener('click', function(e) {
         const btn = e.target.closest('button');
         if (!btn) return;
 
+        // EDIT BUTTON
         if (btn.innerHTML.includes('fa-pen') || btn.classList.contains('edit-btn')) {
           e.preventDefault(); e.stopPropagation();
           const row = btn.closest('tr');
@@ -430,6 +443,7 @@
           return;
         }
 
+        // CLOSE BUTTONS
         if (btn.classList.contains('modal-close-btn') || btn.classList.contains('btn-secondary') || btn.hasAttribute('data-close-modal')) {
           const specificModal = btn.getAttribute('data-close-modal');
           if (specificModal) {
@@ -440,13 +454,61 @@
             if (parent) parent.classList.add('hidden');
           }
         }
+
+        // --- BLOCK CHECKOUT IF STOCK IS 0 (FOR BOTH ADMIN & EMPLOYEE) ---
+        
+        // 1. Mobile Confirm Checkout Button Block
+        if (btn.id === 'confirmMobileCheckoutBtn' || btn.id === 'confirmAdminSelfCheckoutBtn') {
+          const stockBadge = btn.id === 'confirmMobileCheckoutBtn' ? document.getElementById('checkoutModalStock') : document.getElementById('adminSelfCurrentStockBadge');
+          const qtyInput = btn.id === 'confirmMobileCheckoutBtn' ? document.getElementById('checkoutQtyInput') : document.getElementById('adminSelfQuantity');
+          
+          if (stockBadge && qtyInput) {
+            const stock = parseInt(stockBadge.innerText);
+            const qty = parseInt(qtyInput.value);
+            if (stock <= 0 || qty > stock) {
+              e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+              alert('CRITICAL ERROR: This item is Out of Stock (0 or Negative). You cannot check it out.');
+              return false;
+            }
+          }
+        }
+
+        // 2. Initial "Take" Button Block (Before Modal Opens)
+        if (btn.innerText.includes('Take') || btn.innerHTML.includes('fa-cart-arrow-down')) {
+          
+          // Check if Admin View (Has Table Row)
+          const row = btn.closest('tr');
+          if (row && row.cells.length > 3) {
+            const stock = parseInt(row.cells[3].innerText);
+            if (stock <= 0) {
+              e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+              alert('CRITICAL ERROR: This item is Out of Stock (0 or Negative). You cannot check it out.');
+              return false;
+            }
+          } 
+          // Check if Employee View (Has Mobile Card Div)
+          else {
+            const container = btn.closest('div[style], div[class]') || btn.parentElement.parentElement;
+            if (container && container.innerText) {
+              // Regex looks for "0 units" or "-2 units" in the card's text
+              const match = container.innerText.match(/([-0-9]+)\s*units/i);
+              if (match) {
+                const stock = parseInt(match[1]);
+                if (stock <= 0) {
+                  e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+                  alert('CRITICAL ERROR: This item is Out of Stock (0 or Negative). You cannot check it out.');
+                  return false;
+                }
+              }
+            }
+          }
+        }
       }, true);
 
-      // --- EMERGENCY DATABASE FETCH: IF TABLE IS BLANK, PULL DATA DIRECTLY ---
+      // --- EMERGENCY DATABASE FETCH ---
       setTimeout(() => {
         try {
           const tbody = document.getElementById('ledgerTableBody');
-          // Agar 1.5 second baad bhi table khali hai, toh force fetch karo
           if (tbody && tbody.innerHTML.trim() === '') {
             const db = firebase.firestore();
             db.collection('transactions').orderBy('Timestamp', 'desc').limit(50).get()
