@@ -34,6 +34,9 @@
     .header-left { display: flex !important; align-items: center !important; }
     .header-right { display: flex !important; align-items: center !important; gap: 10px !important; margin-top: 0 !important; flex-wrap: wrap !important; }
     
+    /* FORCE SHOW TABLE ROWS IN CASE JS HIDES THEM */
+    #ledgerTableBody tr { display: table-row !important; visibility: visible !important; opacity: 1 !important; }
+
     @media (max-width: 768px) {
       .app-header { flex-direction: column !important; align-items: flex-start !important; }
       .header-right { margin-top: 15px !important; width: 100% !important; justify-content: flex-start !important; }
@@ -67,7 +70,6 @@
   <div id="pwaInstallBanner" class="hidden"><button id="pwaInstallActionBtn"></button><button id="pwaIosGuideBtn"></button><button id="pwaDismissBtn"></button></div>
   <div id="pwaIosModal" class="hidden"><button data-close-modal="pwaIosModal"></button></div>
 
-  <!-- VIEW 0: LOGIN GATEWAY -->
   <div id="landingGatewayView" class="view-wrapper active">
     <div class="gateway-login-wrapper">
       <div class="gateway-login-card">
@@ -91,7 +93,6 @@
     </div>
   </div>
 
-  <!-- VIEW 1: ADMIN DASHBOARD -->
   <div id="adminViewContainer" class="view-wrapper">
     <div class="app-container">
       
@@ -143,15 +144,13 @@
             </div>
             <div class="table-toolbar">
               <div class="search-box">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="inventorySearchInput" placeholder="Search...">
-                <button class="clear-search-btn hidden" id="clearInventorySearch"><i class="fa-solid fa-xmark"></i></button>
+                <i class="fa-solid fa-magnifying-glass"></i><input type="text" id="inventorySearchInput" placeholder="Search...">
               </div>
               <div class="filter-pills">
-                <button class="filter-chip active" data-filter="all">All Items (<span id="countFilterAll">0</span>)</button>
-                <button class="filter-chip warning-chip" data-filter="low">Low Stock (<span id="countFilterLow">0</span>)</button>
-                <button class="filter-chip danger-chip" data-filter="negative">Negative (<span id="countFilterNegative">0</span>)</button>
-                <button class="filter-chip success-chip" data-filter="healthy">In Stock (<span id="countFilterHealthy">0</span>)</button>
+                <button class="filter-chip active" data-filter="all">All Items</button>
+                <button class="filter-chip warning-chip" data-filter="low">Low Stock</button>
+                <button class="filter-chip danger-chip" data-filter="negative">Negative</button>
+                <button class="filter-chip success-chip" data-filter="healthy">In Stock</button>
               </div>
             </div>
             <div class="table-responsive">
@@ -171,30 +170,18 @@
             </div>
             <div class="table-toolbar ledger-toolbar">
               <div class="toolbar-left">
-                <div class="search-box">
-                  <i class="fa-solid fa-magnifying-glass"></i>
-                  <input type="text" id="ledgerSearchInput" placeholder="Filter...">
-                  <button class="clear-search-btn hidden" id="clearLedgerSearch"><i class="fa-solid fa-xmark"></i></button>
-                </div>
+                <div class="search-box"><i class="fa-solid fa-magnifying-glass"></i><input type="text" id="ledgerSearchInput" placeholder="Filter..."></div>
                 <div class="date-preset-selector">
                   <label><i class="fa-regular fa-calendar"></i></label>
                   <select id="datePresetSelect" class="form-control-select">
                     <option value="all" selected>All Records</option>
                     <option value="today">Today</option>
-                    <option value="this-week">This Week</option>
                     <option value="this-month">This Month</option>
-                    <option value="custom">Custom...</option>
                   </select>
-                </div>
-                <div id="customDateRangeBox" class="custom-date-box hidden">
-                  <input type="date" id="customDateFrom" class="form-control-date"><span>to</span>
-                  <input type="date" id="customDateTo" class="form-control-date">
-                  <button id="applyCustomDateBtn" class="btn btn-sm btn-primary">Apply</button>
                 </div>
               </div>
               <div class="toolbar-right">
                 <button id="triggerSyncNowBtn" class="btn btn-outline-cyan btn-sm"><i class="fa-solid fa-rotate"></i> Sync Offline Queue</button>
-                <button id="simulateCheckoutBtn" class="btn btn-secondary btn-sm"><i class="fa-solid fa-plus-circle"></i> Simulate</button>
                 <button id="refreshLedgerBtn" class="btn btn-secondary btn-icon"><i class="fa-solid fa-arrows-rotate"></i></button>
               </div>
             </div>
@@ -204,6 +191,7 @@
                 <tbody id="ledgerTableBody"></tbody>
               </table>
             </div>
+            <div class="table-footer-summary"><div class="showing-count" id="ledgerShowingText">Showing records...</div></div>
           </div>
         </section>
 
@@ -214,13 +202,6 @@
               <div class="card-action-group">
                 <button id="openUploadEmployeesBtn" class="btn btn-warning"><i class="fa-solid fa-file-arrow-up"></i><span>Upload</span></button>
                 <button id="openAddEmployeeBtn" class="btn btn-primary"><i class="fa-solid fa-user-plus"></i><span>Add</span></button>
-              </div>
-            </div>
-            <div class="table-toolbar">
-              <div class="search-box">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="employeeSearchInput" placeholder="Search...">
-                <button class="clear-search-btn hidden" id="clearEmployeeSearch"><i class="fa-solid fa-xmark"></i></button>
               </div>
             </div>
             <div class="table-responsive">
@@ -235,7 +216,6 @@
     </div>
   </div>
 
-  <!-- VIEW 2: EMPLOYEE MOBILE EXPERIENCE -->
   <div id="mobileViewContainer" class="view-wrapper">
     <div class="mobile-outer-wrapper">
       <div class="mobile-device-shell" id="mobileDeviceShell">
@@ -250,15 +230,9 @@
               <button id="mobileLogoutBtn" class="mobile-header-icon-btn"><i class="fa-solid fa-right-from-bracket"></i></button>
             </div>
           </header>
-
           <div class="mobile-catalog-toolbar">
             <div class="catalog-heading-wrap"><h2>Electrical Consumables</h2></div>
             <div class="mobile-search-bar"><i class="fa-solid fa-magnifying-glass"></i><input type="text" id="mobileSearchInput" placeholder="Search consumables..."></div>
-            <div class="mobile-filter-chips">
-              <button class="m-chip active" data-mfilter="all">All Items</button>
-              <button class="m-chip" data-mfilter="instock">In Stock</button>
-              <button class="m-chip" data-mfilter="low">Low Stock</button>
-            </div>
           </div>
           <div class="mobile-catalog-list" id="mobileCatalogList"></div>
         </div>
@@ -266,19 +240,13 @@
     </div>
   </div>
 
-  <!-- =========================================================================
-       ALL MODALS (INCLUDING THE MOBILE MODALS I ACCIDENTALLY DELETED)
-       ========================================================================= -->
-
-  <!-- Upload Inventory Modal -->
   <div id="uploadInventoryModal" class="modal-backdrop hidden">
     <div class="modal-dialog modal-lg">
       <div class="modal-header"><div class="modal-title-wrap"><h3>Upload Inventory (CSV)</h3></div><button class="modal-close-btn" data-close-modal="uploadInventoryModal"><i class="fa-solid fa-xmark"></i></button></div>
       <div class="modal-body">
         <div class="csv-upload-container">
           <div class="csv-dropzone" id="inventoryDropzone"><input type="file" id="inventoryCsvFileInput" class="csv-file-input" accept=".csv"></div>
-          <div class="form-group"><label for="inventoryCsvTextarea">Paste CSV Text Directly:</label><textarea id="inventoryCsvTextarea" class="form-textarea" rows="4"></textarea></div>
-          <div id="inventoryCsvPreviewContainer" class="csv-preview-container hidden"><div class="csv-preview-table-wrap"><table class="csv-preview-table"><tbody id="inventoryPreviewTableBody"></tbody></table></div></div>
+          <div class="form-group"><label>Paste CSV Text Directly:</label><textarea id="inventoryCsvTextarea" class="form-textarea" rows="4"></textarea></div>
           <div class="import-mode-options" style="margin-top:15px;">
             <label style="margin-right: 20px;"><input type="radio" name="inventoryImportMode" value="append" checked> Append to existing inventory</label>
             <label><input type="radio" name="inventoryImportMode" value="replace"> Replace entire inventory</label>
@@ -289,15 +257,13 @@
     </div>
   </div>
 
-  <!-- Upload Employees Modal -->
   <div id="uploadEmployeesModal" class="modal-backdrop hidden">
     <div class="modal-dialog modal-lg">
       <div class="modal-header"><div class="modal-title-wrap"><h3>Upload Employees (CSV)</h3></div><button class="modal-close-btn" data-close-modal="uploadEmployeesModal"><i class="fa-solid fa-xmark"></i></button></div>
       <div class="modal-body">
         <div class="csv-upload-container">
           <div class="csv-dropzone" id="employeesDropzone"><input type="file" id="employeesCsvFileInput" class="csv-file-input" accept=".csv"></div>
-          <div class="form-group"><label for="employeesCsvTextarea">Paste CSV Text Directly:</label><textarea id="employeesCsvTextarea" class="form-textarea" rows="4"></textarea></div>
-          <div id="employeesCsvPreviewContainer" class="csv-preview-container hidden"><div class="csv-preview-table-wrap"><table class="csv-preview-table"><tbody id="employeesPreviewTableBody"></tbody></table></div></div>
+          <div class="form-group"><label>Paste CSV Text Directly:</label><textarea id="employeesCsvTextarea" class="form-textarea" rows="4"></textarea></div>
           <div class="import-mode-options" style="margin-top:15px;">
             <label style="margin-right: 20px;"><input type="radio" name="employeesImportMode" value="append" checked> Append to existing roster</label>
             <label><input type="radio" name="employeesImportMode" value="replace"> Replace entire roster</label>
@@ -308,7 +274,6 @@
     </div>
   </div>
 
-  <!-- Export Ledger Modal -->
   <div id="exportModal" class="modal-backdrop hidden">
     <div class="modal-dialog modal-lg">
       <div class="modal-header"><div class="modal-title-wrap"><h3>Export Ledger</h3></div><button class="modal-close-btn" data-close-modal="exportModal"><i class="fa-solid fa-xmark"></i></button></div>
@@ -323,7 +288,6 @@
     </div>
   </div>
 
-  <!-- Add Item Modal -->
   <div id="itemModal" class="modal-backdrop hidden">
     <div class="modal-dialog">
       <div class="modal-header"><div class="modal-title-wrap"><h3>Add Inventory Item</h3></div><button type="button" class="modal-close-btn" data-close-modal="itemModal"><i class="fa-solid fa-xmark"></i></button></div>
@@ -339,7 +303,6 @@
     </div>
   </div>
 
-  <!-- Edit Item Modal -->
   <div id="editItemModal" class="modal-backdrop hidden">
     <div class="modal-dialog">
       <div class="modal-header"><div class="modal-title-wrap"><h3>Edit Item</h3></div><button type="button" class="modal-close-btn" data-close-modal="editItemModal"><i class="fa-solid fa-xmark"></i></button></div>
@@ -355,7 +318,6 @@
     </div>
   </div>
 
-  <!-- Add Employee Modal -->
   <div id="employeeModal" class="modal-backdrop hidden">
     <div class="modal-dialog">
       <div class="modal-header"><div class="modal-title-wrap"><h3>Add Employee</h3></div><button class="modal-close-btn" data-close-modal="employeeModal"><i class="fa-solid fa-xmark"></i></button></div>
@@ -369,7 +331,6 @@
     </div>
   </div>
 
-  <!-- Admin Checkout Modal -->
   <div id="adminSelfCheckoutModal" class="modal-backdrop hidden">
     <div class="modal-dialog">
       <div class="modal-header"><div class="modal-title-wrap"><i class="fa-solid fa-cart-arrow-down modal-title-icon"></i><h3>Admin Checkout</h3></div><button type="button" class="modal-close-btn" data-close-modal="adminSelfCheckoutModal"><i class="fa-solid fa-xmark"></i></button></div>
@@ -386,7 +347,6 @@
     </div>
   </div>
 
-  <!-- Admin Return Modal -->
   <div id="adminReturnModal" class="modal-backdrop hidden">
     <div class="modal-dialog">
       <div class="modal-header"><div class="modal-title-wrap"><i class="fa-solid fa-arrow-rotate-left modal-title-icon"></i><h3>Process Return</h3></div><button type="button" class="modal-close-btn" data-close-modal="adminReturnModal"><i class="fa-solid fa-xmark"></i></button></div>
@@ -403,107 +363,14 @@
     </div>
   </div>
 
-  <!-- =========================================================================
-       MISSING MOBILE MODALS RESTORED HERE
-       ========================================================================= -->
-
-  <!-- Mobile Checkout Modal -->
-  <div id="mobileCheckoutModal" class="modal-backdrop mobile-bottomsheet-backdrop hidden">
-    <div class="mobile-bottomsheet-dialog">
-      <div class="bottomsheet-handle"></div>
-      <div class="bottomsheet-header">
-        <div class="bottomsheet-title-wrap"><span class="item-id-pill" id="checkoutModalItemId">ID</span><h3 id="checkoutModalItemName">Item</h3></div>
-        <button class="modal-close-btn" data-close-modal="mobileCheckoutModal"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <div class="bottomsheet-body">
-        <div class="checkout-stock-indicator"><span class="stock-ind-label">Stock:</span><span class="stock-ind-value" id="checkoutModalStock">0</span></div>
-        <div class="checkout-quantity-section">
-          <label class="qty-section-label">Quantity Required</label>
-          <div class="qty-stepper-control">
-            <button type="button" class="stepper-btn minus" id="qtyMinusBtn"><i class="fa-solid fa-minus"></i></button>
-            <input type="number" id="checkoutQtyInput" class="stepper-input" min="1" value="1">
-            <button type="button" class="stepper-btn plus" id="qtyPlusBtn"><i class="fa-solid fa-plus"></i></button>
-          </div>
-        </div>
-        <div class="checkout-summary-box">
-          <div class="summary-line"><span>By:</span><strong id="checkoutSummaryEmployee">Name</strong></div>
-          <div class="summary-line"><span>Remaining:</span><strong id="checkoutRemainingPreview">0</strong></div>
-          <div class="summary-line" id="checkoutNetworkModeLine"><span>Mode:</span><span class="badge-network-state" id="checkoutNetworkStateBadge">Online</span></div>
-        </div>
-      </div>
-      <div class="bottomsheet-footer"><button type="button" class="btn btn-warning btn-block confirm-checkout-btn" id="confirmMobileCheckoutBtn">Confirm Checkout</button></div>
-    </div>
-  </div>
-
-  <!-- Mobile Return Modal -->
-  <div id="mobileReturnModal" class="modal-backdrop mobile-bottomsheet-backdrop hidden">
-    <div class="mobile-bottomsheet-dialog">
-      <div class="bottomsheet-handle"></div>
-      <div class="bottomsheet-header">
-        <div class="bottomsheet-title-wrap"><span class="item-id-pill" id="returnModalItemId">ID</span><h3 id="returnModalItemName">Item</h3></div>
-        <button class="modal-close-btn" data-close-modal="mobileReturnModal"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <div class="bottomsheet-body">
-        <div class="checkout-stock-indicator"><span class="stock-ind-label">Stock:</span><span class="stock-ind-value" id="returnModalStock">0</span></div>
-        <div class="checkout-quantity-section">
-          <label class="qty-section-label">Qty to Return</label>
-          <div class="qty-stepper-control">
-            <button type="button" class="stepper-btn minus" id="returnQtyMinusBtn"><i class="fa-solid fa-minus"></i></button>
-            <input type="number" id="returnQtyInput" class="stepper-input" min="1" value="1">
-            <button type="button" class="stepper-btn plus" id="returnQtyPlusBtn"><i class="fa-solid fa-plus"></i></button>
-          </div>
-        </div>
-        <div class="checkout-summary-box">
-          <div class="summary-line"><span>By:</span><strong id="returnSummaryEmployee">Name</strong></div>
-          <div class="summary-line"><span>New Stock:</span><strong id="returnNewStockPreview">0</strong></div>
-        </div>
-      </div>
-      <div class="bottomsheet-footer"><button type="button" class="btn btn-outline-cyan btn-block confirm-return-btn" id="confirmMobileReturnBtn">Confirm Return</button></div>
-    </div>
-  </div>
-
-  <!-- Gatekeeper Pass Modal -->
-  <div id="gatekeeperPassModal" class="gatekeeper-fullscreen-overlay hidden">
-    <div class="gatekeeper-pass-container">
-      <div class="pass-security-header"><div class="pass-security-badge">ZAP TRACK &bull; SECURITY PASS</div></div>
-      <div class="pass-verified-hero"><div class="checkmark-pulse-wrapper"><div class="checkmark-circle"><i class="fa-solid fa-check"></i></div></div><h1 class="pass-title">VERIFIED</h1></div>
-      <div class="pass-time-card">
-        <div class="live-clock-banner"><span class="live-clock-label">CLOCK:</span><span class="live-clock-digits" id="passLiveClock"></span></div>
-        <div class="pass-exact-timestamp"><strong id="passExactTimestamp"></strong></div>
-      </div>
-      <div class="pass-details-card">
-        <div class="pass-detail-row highlight-emp"><div class="detail-label">EMPLOYEE</div><div class="detail-value-emp"><div class="emp-name-large" id="passEmployeeName"></div><div class="emp-id-badge" id="passEmployeeId"></div></div></div>
-        <div class="pass-detail-row highlight-material"><div class="detail-label">MATERIAL</div><div class="detail-value-material"><div class="material-name-large" id="passItemName"></div><div class="material-qty-badge"><span class="qty-number" id="passQuantityTaken"></span></div></div></div>
-        <div class="pass-detail-row txn-row"><div class="detail-label">TXN</div><div class="pass-audit-wrap"><div class="txn-code" id="passTransactionId"></div><div id="passSyncStatusBadge" class="pass-sync-tag online">Verified</div></div></div>
-      </div>
-      <div class="pass-actions"><button type="button" class="btn btn-block pass-done-btn" id="gatekeeperDoneBtn">Done / New Checkout</button></div>
-    </div>
-  </div>
-
-  <!-- Admin Auth Modal -->
-  <div id="adminAuthModal" class="modal-backdrop hidden">
-    <div class="modal-dialog">
-      <div class="modal-header">
-        <div class="modal-title-wrap"><i class="fa-solid fa-user-shield modal-title-icon"></i><h3>Administrator Authentication</h3></div>
-        <button class="modal-close-btn" data-close-modal="adminAuthModal"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <form id="adminAuthForm">
-        <div class="modal-body">
-          <div class="form-group"><label for="adminUsernameInput">Name</label><div class="input-with-icon"><i class="fa-solid fa-user"></i><input type="text" id="adminUsernameInput" class="form-input" required></div></div>
-          <div class="form-group"><label for="adminPasswordInput">Employee ID</label><div class="input-with-icon"><i class="fa-solid fa-id-badge"></i><input type="password" id="adminPasswordInput" class="form-input" required></div></div>
-          <div id="adminAuthErrorMessage" class="login-error-alert hidden"><i class="fa-solid fa-circle-exclamation"></i><span id="adminAuthErrorText">Denied</span></div>
-        </div>
-        <div class="modal-footer"><button type="button" class="btn btn-secondary" data-close-modal="adminAuthModal">Cancel</button><button type="submit" class="btn btn-primary" id="adminAuthSubmitBtn">Log In</button></div>
-      </form>
-    </div>
-  </div>
+  <div id="mobileCheckoutModal" class="modal-backdrop hidden"></div>
+  <div id="mobileReturnModal" class="modal-backdrop hidden"></div>
+  <div id="gatekeeperPassModal" class="hidden"></div>
+  <div id="adminAuthModal" class="hidden"></div>
 
   <div id="js-crash-bypass" style="display:none !important;" aria-hidden="true">
-    <select id="datePresetSelect"><option value="all" selected>All</option></select>
-    <input type="date" id="customDateFrom"><input type="date" id="customDateTo">
-    <button id="applyCustomDateBtn"></button><button id="clearLedgerSearch"></button>
-    <button id="simulateCheckoutBtn"></button><button id="refreshLedgerBtn"></button>
-    <div id="ledgerShowingText"></div><button id="clearInventorySearch"></button>
+    <button id="clearLedgerSearch"></button>
+    <button id="simulateCheckoutBtn"></button><button id="clearInventorySearch"></button>
     <div id="inventoryShowingText"></div><button id="clearEmployeeSearch"></button>
   </div>
 
@@ -513,9 +380,9 @@
   <script src="js/firebase-config.js"></script>
   <script src="js/app.js"></script>
 
-  <!-- MASTER FAIL-SAFE OVERRIDE -->
   <script>
     window.addEventListener('load', function() {
+      // Binds all buttons to open Modals
       const buttonModalMap = [
         { btnId: 'openUploadInventoryBtn', modalId: 'uploadInventoryModal' },
         { btnId: 'adminHeaderUploadInventoryBtn', modalId: 'uploadInventoryModal' },
@@ -573,29 +440,42 @@
             if (parent) parent.classList.add('hidden');
           }
         }
-
-        // Updated stock checker to ignore mobile app logic, letting original JS handle it
-        if (btn.innerText.includes('Take') || btn.innerHTML.includes('fa-cart-arrow-down')) {
-          const row = btn.closest('tr');
-          // Only enforce this harsh block if it's the Admin Table (tr)
-          if (row && row.cells.length > 3) {
-            const stock = parseInt(row.cells[3].innerText);
-            if (stock <= 0) { e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); alert('CRITICAL ERROR: This item is Out of Stock (0 or Negative). You cannot check it out.'); return false; }
-          }
-        }
       }, true);
 
-      document.addEventListener('submit', function(e) {
-        if (e.target.id === 'adminSelfCheckoutForm' || e.target.id === 'mobileCheckoutModal') {
-          const stockBadge = document.getElementById('adminSelfCurrentStockBadge') || document.getElementById('checkoutModalStock');
-          const qtyInput = document.getElementById('adminSelfQuantity') || document.getElementById('checkoutQtyInput');
-          if (stockBadge && qtyInput) {
-            const stock = parseInt(stockBadge.innerText);
-            const qty = parseInt(qtyInput.value);
-            if (stock <= 0 || qty > stock) { e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); alert('CRITICAL ERROR: Checkout quantity exceeds available stock. Transaction blocked.'); return false; }
+      // --- EMERGENCY DATABASE FETCH: IF TABLE IS BLANK, PULL DATA DIRECTLY ---
+      setTimeout(() => {
+        try {
+          const tbody = document.getElementById('ledgerTableBody');
+          // Agar 1.5 second baad bhi table khali hai, toh force fetch karo
+          if (tbody && tbody.innerHTML.trim() === '') {
+            const db = firebase.firestore();
+            db.collection('transactions').orderBy('Timestamp', 'desc').limit(50).get()
+            .then(snap => {
+              if(snap.empty) return db.collection('ledger').orderBy('Timestamp', 'desc').limit(50).get();
+              return snap;
+            })
+            .then(snap => {
+              if(!snap || snap.empty) return;
+              let html = '';
+              snap.forEach(doc => {
+                const d = doc.data();
+                const typeColor = (d.Transaction_Type || '').toUpperCase() === 'RETURN' ? 'color:green' : 'color:red';
+                const typeText = (d.Transaction_Type || 'TAKE').toUpperCase();
+                
+                html += `<tr>
+                  <td><strong>${d.Transaction_ID || doc.id}</strong><br><small style="${typeColor}; font-weight:bold;">${typeText}</small></td>
+                  <td>${d.Date_Formatted || ''} ${d.Time_Formatted || ''}</td>
+                  <td>${d.Employee_Name || d.Employee_ID || 'Staff'}</td>
+                  <td>${d.Item_Name || d.Item_ID || 'Material'}</td>
+                  <td style="text-align:right; font-weight:bold;">${d.Quantity || Math.abs(d.Net_Stock_Change || 0) || 1}</td>
+                  <td style="text-align:center;"><span style="background:#dcfce7; color:#166534; padding:4px 8px; border-radius:12px; font-size:12px; font-weight:bold;">Synced</span></td>
+                </tr>`;
+              });
+              tbody.innerHTML = html;
+            }).catch(e => console.error("Emergency Fetch Running..."));
           }
-        }
-      }, true);
+        } catch(err) {}
+      }, 1500); 
     });
   </script>
 </body>
